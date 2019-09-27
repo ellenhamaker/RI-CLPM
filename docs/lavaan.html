@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Ellen L. Hamaker, &amp; Jeroen D. Mulder" />
+
+
+<title>Extensions of the RI-CLPM using Lavaan</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">The RI-CLPM & Extensions</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="mplus.html">Mplus</a>
+</li>
+<li>
+  <a href="lavaan.html">Lavaan (R)</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Extensions of the RI-CLPM using Lavaan</h1>
+<h4 class="author">Ellen L. Hamaker, &amp; Jeroen D. Mulder</h4>
+<h4 class="date">September 30th 2019</h4>
+
+</div>
+
+
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Below you can find the code for installing and loading the required packages <code>Lavaan</code> <span class="citation">(Rosseel 2012)</span> and <code>Tidyverse</code> <span class="citation">(Wickham 2017)</span>, as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the <code>file.choose()</code>-function.</p>
+<pre class="r"><code># If necessary, install the &#39;Lavaan&#39; and &#39;Tidyverse&#39; packages. 
+# install.packages(&#39;lavaan&#39;, dependencies = T)
+# install.packages(&#39;tidyverse&#39;, dependencies = T)
+
+# Load the required packages. 
+require(lavaan) 
+require(tidyverse)
+
+# Load in the data. 
+## Traditional RI-CLPM
+## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPM/RICLPM.dat&quot;
+## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat&quot;
+dat &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat&quot;,
+                  col.names = c(&quot;x1&quot;, &quot;y1&quot;,
+                                &quot;x2&quot;, &quot;y2&quot;, 
+                                &quot;x3&quot;, &quot;y3&quot;,
+                                &quot;x4&quot;, &quot;y4&quot;)) 
+head(dat)
+
+# Extension 1
+## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPMZ/RICLPMZ.dat&quot;
+## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat&quot;
+datZ &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat&quot;,
+                   col.names = c(&quot;x1&quot;, &quot;x2&quot;, &quot;x3&quot;, &quot;x4&quot;,
+                                &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;, &quot;y4&quot;, 
+                                &quot;z1&quot;, &quot;z2&quot;))
+head(datZ)
+
+## Extension 2
+## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MG RI-CLPM/MGRICLPM.dat&quot;
+## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat&quot;
+datMG &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat&quot;,
+                    col.names = c(&quot;x1&quot;, &quot;x2&quot;, &quot;x3&quot;, &quot;x4&quot;,
+                                &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;, &quot;y4&quot;, 
+                                &quot;G&quot;))
+head(datMG)
+
+# Extension 3
+## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MI RI-CLPM/MIRICLPM.dat&quot;
+## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat&quot;
+datMI &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat&quot;,
+                   col.names = c(&quot;x11&quot;, &quot;x12&quot;, &quot;x13&quot;,
+                                &quot;x21&quot;, &quot;x22&quot;, &quot;x23&quot;,
+                                &quot;x31&quot;, &quot;x32&quot;, &quot;x33&quot;,
+                                &quot;x41&quot;, &quot;x42&quot;, &quot;x43&quot;,
+                                
+                                &quot;y11&quot;, &quot;y12&quot;, &quot;y13&quot;,
+                                &quot;y21&quot;, &quot;y22&quot;, &quot;y23&quot;,
+                                &quot;y31&quot;, &quot;y32&quot;, &quot;y33&quot;, 
+                                &quot;y41&quot;, &quot;y42&quot;, &quot;y43&quot;))
+head(datMI)</code></pre>
+</div>
+<div id="the-ri-clpm" class="section level2 tabset">
+<h2>The RI-CLPM</h2>
+<p>Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time.</p>
+<div id="the-basic-model" class="section level3">
+<h3>The basic model</h3>
+<p>The code for specifying the basic RI-CLPM is given below.</p>
+<pre class="r"><code>RICLPM &lt;- &#39;
+  # Create two individual factors (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Estimate the lagged effects between the within-
+  # person centered variables.
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+
+  # Estimate the covariances between the residuals of 
+  # the within-person centered variables (the innovations).
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4  
+
+  # Estimate the covariance between the within-person 
+  # centered variables at the first wave. 
+  wx1 ~~ wy1 # Covariance
+  
+  # Estimate the variance and covariance of the individual 
+  # factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+
+  # Estimate the (residual) variance of the within-person
+  # centered variables.
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ wx2 # Residual variance
+  wy2 ~~ wy2 # Residual variance
+  wx3 ~~ wx3 # Residual variance
+  wy3 ~~ wy3 # Residual variance
+  wx4 ~~ wx4 # Residual variance
+  wy4 ~~ wy4 # Residual variance
+&#39;
+
+RICLPM.fit &lt;- lavaan(RICLPM, data = dat, missing = &#39;ML&#39;,
+                     meanstructure = T, int.ov.free = T) 
+
+summary(RICLPM.fit, standardized = T)</code></pre>
+</div>
+<div id="constraints-over-time" class="section level3">
+<h3>Constraints over time</h3>
+<p>Below we specify a RI-CLPM with:</p>
+<ol style="list-style-type: decimal">
+<li>fixed auto-regressive and cross-lagged relations over time,</li>
+<li>time-invariant (residual) (co-)variances in the within-person part,</li>
+<li>constrained grand means over time.</li>
+</ol>
+<p>Please note that fixing parameters in Lavaan is done by something called <strong>premultiplication</strong>. It means that we have to add (1) the number that we want to fix the parameter to and (2) an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item <code>x1</code> to factor <code>F</code> to 0, we need to add <code>0*</code> to <code>F =~ x1</code>, resulting in <code>F =~ 0*x1</code>.</p>
+<pre class="r"><code>RICLPM3 &lt;- &#39;
+  # Create two individual factors (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Estimate the lagged effects between the within-
+  # person centered variables. 
+  # Constrain the autoregressive effects and cross-
+  # lagged effects to be invariant over time. 
+  wx2 ~ a*wx1 + b*wy1
+  wy2 ~ c*wx1 + d*wy1
+  wx3 ~ a*wx2 + b*wy2
+  wy3 ~ c*wx2 + d*wy2
+  wx4 ~ a*wx3 + b*wy3
+  wy4 ~ c*wx3 + d*wy3 
+
+  # Estimate the covariances between the residuals of 
+  # the within-person centered variables (the 
+  # innovations), and constrain them over time. 
+  wx2 ~~ cov*wy2
+  wx3 ~~ cov*wy3
+  wx4 ~~ cov*wy4  
+
+  # Estimate the covariance between the within-person 
+  # centered variables at the first wave. 
+  wx1 ~~ wy1 # Covariance
+  
+  # Estimate the variance and covariance of the 
+  # individual factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+
+  # Estimate the grand means, constrained over time 
+  # (through `mx*` and `my*`).
+  x1 + x2 + x3 + x4 ~ mx*1
+  y1 + y2 + y3 + y4 ~ my*1  
+
+  # Estimate the (residual) variance of the within-
+  # person centered variables. Residual variances 
+  # constrained to be invariant over time (through 
+  # `vx*` and `vy*`). 
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ vx*wx2 # Residual variance
+  wy2 ~~ vy*wy2 # Residual variance
+  wx3 ~~ vx*wx3 # Residual variance
+  wy3 ~~ vy*wy3 # Residual variance
+  wx4 ~~ vx*wx4 # Residual variance
+  wy4 ~~ vy*wy4 # Residual variance
+&#39;
+
+RICLPM3.fit &lt;- lavaan(RICLPM3, data = dat, missing = &#39;ML&#39;,
+                      meanstructure = T, int.ov.free = T) 
+
+summary(RICLPM3.fit, standardized = T)</code></pre>
+</div>
+</div>
+<div id="extension-1-time-invariant-predictor-z_1" class="section level2 tabset">
+<h2>Extension 1: time-invariant predictor <span class="math inline">\(z_{1}\)</span></h2>
+<p>Use the tabs below to navigate to the model specification of the RI-CLPM with either <span class="math inline">\(z_{1}\)</span> as a predictor of the observed variables, or with <span class="math inline">\(z_{1}\)</span> as a predictor of the random intercepts.</p>
+<div id="z_1-as-predictor-of-observed-variables" class="section level3">
+<h3><span class="math inline">\(z_{1}\)</span> as predictor of observed variables</h3>
+<p>Below you can find the code for the RI-CLPM with 4 waves and a between-level predictor for the observed variables.</p>
+<pre class="r"><code>RICLPM.ext1 &lt;- &#39;
+  # Create two individual factors (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Regression of observed variables on z1 (restricted). 
+  x1 + x2 + x3 + x4 + y1 + y2 + y3+ y4 ~ z1 # Unrestricted. 
+  # x1 + x2 + x3 + x4 ~ s1*z1 # Constrained over time. 
+  # y1 + y2 + y3 + y4 ~ s2*z1 # Constrained over time. 
+
+  # Estimate the lagged effects between the within-
+  # person centered variables. 
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+
+  # Estimate the covariance between the within-person 
+  # centered variables at the first wave. 
+  wx1 ~~ wy1
+
+  # Estimate the covariances between the residuals of 
+  # the within-person centered variables (the innovations). 
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4  
+
+  # Estimate the variance and covariance of the individual 
+  # factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+
+  # Estimate the (residual) variance of the within-person
+  # centered variables.
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ wx2 # Residual variance
+  wy2 ~~ wy2 # Residual variance
+  wx3 ~~ wx3 # Residual variance
+  wy3 ~~ wy3 # Residual variance
+  wx4 ~~ wx4 # Residual variance
+  wy4 ~~ wy4 # Residual variance
+&#39;
+
+RICLPM.ext1.fit &lt;- lavaan(RICLPM.ext1, data = datZ, missing = &#39;ML&#39;,
+                          meanstructure = T, int.ov.free = T) 
+
+summary(RICLPM.ext1.fit, standardized = T)</code></pre>
+</div>
+<div id="z_1-as-predictor-of-random-intercepts" class="section level3">
+<h3><span class="math inline">\(z_{1}\)</span> as predictor of random intercepts</h3>
+<p>Below you can find the code for the RI-CLPM with 4 waves and the random intercepts regressed on predictor <span class="math inline">\(z_{1}\)</span>.</p>
+<pre class="r"><code>RICLPM1.ext1 &lt;- &#39;
+  # Create two individual factors (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Regression of random intercepts on z1.  
+  RIx + RIy ~ z1
+
+  # Estimate the lagged effects between the within-
+  # person centered variables. 
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+
+  # Estimate the covariance between the within-person
+  # centered variables at the first wave. 
+  wx1 ~~ wy1
+
+  # Estimate the covariances between the residuals of
+  # the within-person centered variables (the innovations). 
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4  
+
+  # Estimate the variance and covariance of the individual
+  # factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+
+  # Estimate the (residual) variance of the within-person
+  # centered variables.
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ wx2 # Residual variance
+  wy2 ~~ wy2 # Residual variance
+  wx3 ~~ wx3 # Residual variance
+  wy3 ~~ wy3 # Residual variance
+  wx4 ~~ wx4 # Residual variance
+  wy4 ~~ wy4 # Residual variance
+&#39;
+
+RICLPM1.ext1.fit &lt;- lavaan(RICLPM1.ext1, data = datZ, missing = &#39;ML&#39;, 
+                           meanstructure = T, int.ov.free = T) 
+
+summary(RICLPM1.ext1.fit, standardized = T)</code></pre>
+</div>
+</div>
+<div id="extension-2-multiple-group" class="section level2 tabset">
+<h2>Extension 2: multiple group</h2>
+<p>Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters.</p>
+<div id="the-basic-model-1" class="section level3">
+<h3>The basic model</h3>
+<p>Below you can find the code for a multiple group RI-CLPM with 4 waves.</p>
+<pre class="r"><code>RICLPM1.ext2 &lt;- &#39;
+  # Create two individual factors (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Estimate the lagged effects between the within-
+  # person centered variables. 
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+
+  # Estimate the covariance between the within-
+  # person components at the first wave. 
+  wx1 ~~ wy1 
+
+  # Estimate the covariances between the residuals of
+  # the within-person centered variables (the innovations). 
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4  
+
+  # Estimate the variance and covariance of the individual
+  # factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy 
+
+  # Estimate the (residual) variance of the within-person
+  # centered variables.
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ wx2 # Residual variance
+  wy2 ~~ wy2 # Residual variance
+  wx3 ~~ wx3 # Residual variance
+  wy3 ~~ wy3 # Residual variance
+  wx4 ~~ wx4 # Residual variance
+  wy4 ~~ wy4 # Residual variance
+&#39;
+
+RICLPM1.ext2.fit &lt;- lavaan(RICLPM1.ext2, data = datMG, missing = &#39;ML&#39;,
+                           group = &quot;G&quot;, 
+                           meanstructure = T, int.ov.free = T)
+summary(RICLPM1.ext2.fit)</code></pre>
+</div>
+<div id="constrained-lagged-parameters" class="section level3">
+<h3>Constrained lagged-parameters</h3>
+<p>Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagged-parameters are constrained to be equal over time.</p>
+<pre class="r"><code>RICLPM2.ext2 &lt;- &#39;
+  # Create two individual factors (random intercepts).
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
+  
+  # Create within-person centered variables.
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+
+  # Estimate the lagged effects between the within-
+  # person centered variables. Constrain the  
+  # autoregressive effects across groups. 
+  wx2 ~ c(a1, a1)*wx1 + c(b1, b1)*wy1
+  wy2 ~ c(c1, c1)*wx1 + c(d1, d1)*wy1
+  wx3 ~ c(a2, a2)*wx2 + c(b2, b2)*wy2
+  wy3 ~ c(c2, c2)*wx2 + c(d2, d2)*wy2
+  wx4 ~ c(a3, a3)*wx3 + c(b3, b3)*wy3
+  wy4 ~ c(c3, c3)*wx3 + c(d3, d3)*wy3 
+
+  # Estimate the covariance between the within-person
+  # components at the first wave. 
+  wx1 ~~ wy1 
+
+ # Estimate the covariances between the residuals of
+  # the within-person centered variables (the innovations). 
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4  
+
+  # Estimate the variance and covariance of the individual
+  # factors. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy 
+
+  # Estimate the (residual) variance of the within-person
+  # centered variables.
+  wx1 ~~ wx1 # Variance
+  wy1 ~~ wy1 # Variance
+  wx2 ~~ wx2 # Residual variance
+  wy2 ~~ wy2 # Residual variance
+  wx3 ~~ wx3 # Residual variance
+  wy3 ~~ wy3 # Residual variance
+  wx4 ~~ wx4 # Residual variance
+  wy4 ~~ wy4 # Residual variance
+&#39;
+
+RICLPM2.ext2.fit &lt;- lavaan(RICLPM2.ext2, data = datMG, missing = &#39;ML&#39;,
+                           group = &quot;G&quot;, 
+                           meanstructure = T, int.ov.free = T)
+summary(RICLPM2.ext2.fit)</code></pre>
+</div>
+</div>
+<div id="extension-3-multiple-indicator" class="section level2 tabset">
+<h2>Extension 3: multiple indicator</h2>
+<p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with</p>
+<ol style="list-style-type: decimal">
+<li>random intercepts for each indicator separately.</li>
+<li>constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.</li>
+<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.</li>
+<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.</li>
+<li>constraints to ensure strong factorial invariance and the RI-CLPM at the latent level.</li>
+</ol>
+<div id="step-1" class="section level3">
+<h3>Step 1</h3>
+<p>Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables), with random intercepts for each indicator separately.</p>
+<pre class="r"><code>RICLPM1.ext3 &lt;- &#39;
+  
+  ################
+  # BETWEEN PART #
+  ################
+  
+  # Create between factors (random intercepts) for each
+  # indicator separately.
+  RIX1 =~ 1*x11 + 1*x21 + 1*x31 + 1*x41
+  RIX2 =~ 1*x12 + 1*x22 + 1*x32 + 1*x42
+  RIX3 =~ 1*x13 + 1*x23 + 1*x33 + 1*x43
+  
+  RIY1 =~ 1*y11 + 1*y21 + 1*y31 + 1*y41
+  RIY2 =~ 1*y12 + 1*y22 + 1*y32 + 1*y42
+  RIY3 =~ 1*y13 + 1*y23 + 1*y33 + 1*y43
+  
+  ##################################
+  # WITHIN PART: MEASUREMENT MODEL #
+  ##################################
+  
+  # Factor models for x at 4 waves.
+  WFX1 =~ x11 + x12 + x13
+  WFX2 =~ x21 + x22 + x23
+  WFX3 =~ x31 + x32 + x33
+  WFX4 =~ x41 + x42 + x43
+  
+  # Factor models for y at 4 waves.
+  WFY1 =~ y11 + y12 + y13
+  WFY2 =~ y21 + y22 + y23
+  WFY3 =~ y31 + y32 + y33
+  WFY4 =~ y41 + y42 + y43
+  
+  #########################
+  # WITHIN PART: DYNAMICS #
+  #########################
+  
+  # Specify the lagged effects between the within-person 
+  # centered latent variables.
+  WFX2 + WFY2 ~ WFX1 + WFY1
+  WFX3 + WFY3 ~ WFX2 + WFY2
+  WFX4 + WFY4 ~ WFX3 + WFY3
+  
+  # Estimate the correlations within the same wave.
+  WFX1 ~~ WFY1
+  WFX2 ~~ WFY2
+  WFX3 ~~ WFY3 
+  WFX4 ~~ WFY4
+  
+  ##########################
+  # ADDITIONAL CONSTRAINTS #
+  ##########################
+  
+  # Constrain covariance of the the between factors and
+  # exogenous within factors to 0. 
+  RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
+
+&#39;
+RICLPM1.ext3.fit &lt;- cfa(RICLPM1.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
+<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
+##                 is not positive definite;
+##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
+<pre class="r"><code>summary(RICLPM1.ext3.fit, standardized = T)</code></pre>
+</div>
+<div id="step-2" class="section level3">
+<h3>Step 2</h3>
+<p>Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.</p>
+<pre class="r"><code>RICLPM2.ext3 &lt;- &#39;
+  
+  ################
+  # BETWEEN PART #
+  ################
+  
+  # Create between factors (random intercepts) for each
+  # indicator separately.
+  RIX1 =~ 1*x11 + 1*x21 + 1*x31 + 1*x41
+  RIX2 =~ 1*x12 + 1*x22 + 1*x32 + 1*x42
+  RIX3 =~ 1*x13 + 1*x23 + 1*x33 + 1*x43
+  
+  RIY1 =~ 1*y11 + 1*y21 + 1*y31 + 1*y41
+  RIY2 =~ 1*y12 + 1*y22 + 1*y32 + 1*y42
+  RIY3 =~ 1*y13 + 1*y23 + 1*y33 + 1*y43
+  
+  ##################################
+  # WITHIN PART: MEASUREMENT MODEL #
+  ##################################
+  
+  # Factor models for x at 4 waves: constrained factor 
+  # loadings over time.
+  WFX1 =~ L1*x11 + L2*x12 + L3*x13
+  WFX2 =~ L1*x21 + L2*x22 + L3*x23
+  WFX3 =~ L1*x31 + L2*x32 + L3*x33
+  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  
+  # Factor models for y at 4 waves.
+  WFY1 =~ L4*y11 + L5*y12 + L6*y13
+  WFY2 =~ L4*y21 + L5*y22 + L6*y23
+  WFY3 =~ L4*y31 + L5*y32 + L6*y33
+  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  
+  #########################
+  # WITHIN PART: DYNAMICS #
+  #########################
+ 
+  # Specify the lagged effects between the within-person 
+  # centered latent variables.
+  WFX2 + WFY2 ~ WFX1 + WFY1
+  WFX3 + WFY3 ~ WFX2 + WFY2
+  WFX4 + WFY4 ~ WFX3 + WFY3
+  
+  # Estimate the correlations within the same wave.
+  WFX1 ~~ WFY1
+  WFX2 ~~ WFY2
+  WFX3 ~~ WFY3 
+  WFX4 ~~ WFY4
+  
+  ##########################
+  # ADDITIONAL CONSTRAINTS #
+  ##########################
+  
+  # Constrain covariance of the the between factors and 
+  # exogenous within factors to 0. 
+  RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
+
+&#39;
+RICLPM2.ext3.fit &lt;- cfa(RICLPM2.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
+<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
+##                 is not positive definite;
+##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
+<pre class="r"><code>summary(RICLPM2.ext3.fit, standardized = T)</code></pre>
+</div>
+<div id="step-3" class="section level3">
+<h3>Step 3</h3>
+<p>Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.</p>
+<pre class="r"><code>RICLPM3.ext3 &lt;- &#39;
+  ################
+  # BETWEEN PART #
+  ################
+  
+  # Create between factors (random intercepts) for
+  # each indicator separately.
+  RIX1 =~ 1*x11 + 1*x21 + 1*x31 + 1*x41
+  RIX2 =~ 1*x12 + 1*x22 + 1*x32 + 1*x42
+  RIX3 =~ 1*x13 + 1*x23 + 1*x33 + 1*x43
+  
+  RIY1 =~ 1*y11 + 1*y21 + 1*y31 + 1*y41
+  RIY2 =~ 1*y12 + 1*y22 + 1*y32 + 1*y42
+  RIY3 =~ 1*y13 + 1*y23 + 1*y33 + 1*y43
+  
+  ##################################
+  # WITHIN PART: MEASUREMENT MODEL #
+  ##################################
+  
+  # Factor models for x at 4 waves: constrained 
+  # factor loadings over time.
+  WFX1 =~ L1*x11 + L2*x12 + L3*x13
+  WFX2 =~ L1*x21 + L2*x22 + L3*x23
+  WFX3 =~ L1*x31 + L2*x32 + L3*x33
+  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  
+  # Factor models for y at 4 waves: constrained 
+  # factor loadings over time. 
+  WFY1 =~ L4*y11 + L5*y12 + L6*y13
+  WFY2 =~ L4*y21 + L5*y22 + L6*y23
+  WFY3 =~ L4*y31 + L5*y32 + L6*y33
+  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  
+  # Constrained intercepts over time (this is necessary
+  # for strong factorial invariance; without these 
+  # contraints we have week factorial invariance). 
+  
+  x11 + x21 + x31 + x41 ~ i1*1
+  x12 + x22 + x32 + x42 ~ i2*1
+  x13 + x23 + x33 + x43 ~ i3*1
+
+  y11 + y21 + y31 + y41 ~ i4*1
+  y12 + y22 + y32 + y42 ~ i5*1
+  y13 + y23 + y33 + y43 ~ i6*1
+  
+  # Free latent means from t = 2 onward (only do this in 
+  # combination with the constraints on the intercepts; 
+  # without these, this would not be specified).
+  
+  WFX2 + WFX3 + WFX4 + WFY2 + WFY3 + WFY4 ~ 1
+  
+  #########################
+  # WITHIN PART: DYNAMICS #
+  #########################
+  
+  # Specify the lagged effects between the within-person
+  # centered latent variables.
+  WFX2 + WFY2 ~ WFX1 + WFY1
+  WFX3 + WFY3 ~ WFX2 + WFY2
+  WFX4 + WFY4 ~ WFX3 + WFY3
+  
+  # Estimate the correlations within the same wave.
+  WFX1 ~~ WFY1
+  WFX2 ~~ WFY2
+  WFX3 ~~ WFY3 
+  WFX4 ~~ WFY4
+  
+  # Constrain covariance of the the between factors and
+  # exogenous within factors to 0. 
+  RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
+
+&#39;
+RICLPM3.ext3.fit &lt;- cfa(RICLPM3.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
+<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
+##                 is not positive definite;
+##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
+<pre class="r"><code>summary(RICLPM3.ext3.fit, standardized = T)</code></pre>
+</div>
+<div id="step-4" class="section level3">
+<h3>Step 4</h3>
+<p>Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.</p>
+<pre class="r"><code>RICLPM4.ext3 &lt;- &#39;
+  ################
+  # BETWEEN PART #
+  ################
+  
+  # Create between factors (random intercepts) for each
+  # indicator separately.
+  RIX1 =~ 1*x11 + 1*x21 + 1*x31 + 1*x41
+  RIX2 =~ 1*x12 + 1*x22 + 1*x32 + 1*x42
+  RIX3 =~ 1*x13 + 1*x23 + 1*x33 + 1*x43
+  
+  RIY1 =~ 1*y11 + 1*y21 + 1*y31 + 1*y41
+  RIY2 =~ 1*y12 + 1*y22 + 1*y32 + 1*y42
+  RIY3 =~ 1*y13 + 1*y23 + 1*y33 + 1*y43
+  
+  # Create a single random intercept for al x variables, 
+  # and another for all y variables and constrain the factor 
+  # loadings to be identical to the within-person factor 
+  # loadings. 
+  
+  RIX =~ L1*RIX1 + L2*RIX2 + L3*RIX3
+  RIY =~ L4*RIY1 + L5*RIY2 + L6*RIY3
+  
+  # Constrain measurement error variances of the second order
+  # factor model to 0. 
+  RIX1 ~~ 0*RIX1
+  RIX2 ~~ 0*RIX2
+  RIX3 ~~ 0*RIX3
+
+  RIY1 ~~ 0*RIY1
+  RIY2 ~~ 0*RIY2
+  RIY3 ~~ 0*RIY3
+  
+  ##################################
+  # WITHIN PART: MEASUREMENT MODEL #
+  ##################################
+  
+  # Due to having a random intercept per indicator, the 
+  # measurement model here is only on the within part of 
+  # the measurements. 
+  
+  # Factor models for x at 4 waves: constrained factor 
+  # loadings over time.
+  WFX1 =~ L1*x11 + L2*x12 + L3*x13
+  WFX2 =~ L1*x21 + L2*x22 + L3*x23
+  WFX3 =~ L1*x31 + L2*x32 + L3*x33
+  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  
+  # Factor models for y at 4 waves: constrained factor 
+  # loadings over time. 
+  WFY1 =~ L4*y11 + L5*y12 + L6*y13
+  WFY2 =~ L4*y21 + L5*y22 + L6*y23
+  WFY3 =~ L4*y31 + L5*y32 + L6*y33
+  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  
+  # Constrained intercepts over time (this is necessary for 
+  # strong factorial invariance; without these contraints 
+  # we have week factorial invariance). 
+  
+  x11 + x21 + x31 + x41 ~ i1*1
+  x12 + x22 + x32 + x42 ~ i2*1
+  x13 + x23 + x33 + x43 ~ i3*1
+
+  y11 + y21 + y31 + y41 ~ i4*1
+  y12 + y22 + y32 + y42 ~ i5*1
+  y13 + y23 + y33 + y43 ~ i6*1
+  
+  # Free latent means from t = 2 onward (only do this in 
+  # combination with the constraints on the intercepts; 
+  # without these, this would not be specified).
+  
+  WFX2 + WFX3 + WFX4 + WFY2 + WFY3 + WFY4 ~ 1
+  
+  #########################
+  # WITHIN PART: DYNAMICS #
+  #########################
+  
+  # Specify the lagged effects between the within-person 
+  # centered latent variables.
+  WFX2 + WFY2 ~ WFX1 + WFY1
+  WFX3 + WFY3 ~ WFX2 + WFY2
+  WFX4 + WFY4 ~ WFX3 + WFY3
+  
+  # Estimate the correlations within the same wave.
+  WFX1 ~~ WFY1
+  WFX2 ~~ WFY2
+  WFX3 ~~ WFY3 
+  WFX4 ~~ WFY4
+  
+  ##########################
+  # ADDITIONAL CONSTRAINTS #
+  ##########################
+  
+  # Set correlations between the between-factors (random 
+  # intercepts) and within-factors at wave 1 at 0. 
+  RIX + RIY ~~ 0*WFX1 + 0*WFY1
+  
+
+&#39;
+RICLPM4.ext3.fit &lt;- cfa(RICLPM4.ext3, data = datMI, missing = &#39;ML&#39;)
+
+summary(RICLPM4.ext3.fit, standardized = T)</code></pre>
+</div>
+<div id="step-5" class="section level3">
+<h3>Step 5</h3>
+<p>Multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with the RI-CLPM at the latent level.</p>
+<pre class="r"><code>RICLPM5.ext3 &lt;- &#39;
+  #####################
+  # MEASUREMENT MODEL #
+  #####################
+  
+  # Factor models for x at 4 waves: constrained factor 
+  # loadings over time.
+  FX1 =~ L1*x11 + L2*x12 + L3*x13
+  FX2 =~ L1*x21 + L2*x22 + L3*x23
+  FX3 =~ L1*x31 + L2*x32 + L3*x33
+  FX4 =~ L1*x41 + L2*x42 + L3*x43
+  
+  # Factor models for y at 4 waves: constrained factor 
+  # loadings over time. 
+  FY1 =~ L4*y11 + L5*y12 + L6*y13
+  FY2 =~ L4*y21 + L5*y22 + L6*y23
+  FY3 =~ L4*y31 + L5*y32 + L6*y33
+  FY4 =~ L4*y41 + L5*y42 + L6*y43
+  
+  # Constrained intercepts over time (this is necessary 
+  # for strong factorial invariance; without these contraints
+  # we have week factorial invariance). 
+  
+  x11 + x21 + x31 + x41 ~ i1*1
+  x12 + x22 + x32 + x42 ~ i2*1
+  x13 + x23 + x33 + x43 ~ i3*1
+
+  y11 + y21 + y31 + y41 ~ i4*1
+  y12 + y22 + y32 + y42 ~ i5*1
+  y13 + y23 + y33 + y43 ~ i6*1
+
+  # Free latent means from t = 2 onward (only do this in 
+  # combination with the constraints on the intercepts; without
+  # these, this would not be specified).
+  FX2 + FX3 + FX4 + FY2 + FY3 + FY4 ~ 1
+
+  ################
+  # BETWEEN PART #
+  ################
+  
+  # Create between factors (random intercepts). 
+  RIX =~ 1*FX1 + 1*FX2 + 1*FX3 + 1*FX4
+  RIY =~ 1*FY1 + 1*FY2 + 1*FY3 + 1*FY4
+
+  # Set the residual variances of all FX and FY variables to 0. 
+  FX1 ~~ 0*FX1
+  FX2 ~~ 0*FX2
+  FX3 ~~ 0*FX3
+  FX4 ~~ 0*FX4
+
+  FY1 ~~ 0*FY1
+  FY2 ~~ 0*FY2
+  FY3 ~~ 0*FY3
+  FY4 ~~ 0*FY4
+
+  ###############
+  # WITHIN PART #
+  ###############
+ 
+  # Create the within-part.
+  WFX1 =~ 1*FX1
+  WFX2 =~ 1*FX2
+  WFX3 =~ 1*FX3
+  WFX4 =~ 1*FX4
+  
+  WFY1 =~ 1*FY1
+  WFY2 =~ 1*FY2
+  WFY3 =~ 1*FY3
+  WFY4 =~ 1*FY4
+  
+  # Specify the lagged effects between the within-person 
+  # centered latent variables.
+  WFX2 + WFY2 ~ WFX1 + WFY1
+  WFX3 + WFY3 ~ WFX2 + WFY2
+  WFX4 + WFY4 ~ WFX3 + WFY3
+  
+  # Estimate the correlations within the same wave.
+  WFX1 ~~ WFY1
+  WFX2 ~~ WFY2
+  WFX3 ~~ WFY3 
+  WFX4 ~~ WFY4
+  
+  ##########################
+  # ADDITIONAL CONSTRAINTS #
+  ##########################
+  
+  # Set correlations between the between-factors (random 
+  # intercepts) and within-factors at wave 1 at 0. 
+  RIX + RIY ~~ 0*WFX1 + 0*WFY1
+
+&#39;
+RICLPM5.ext3.fit &lt;- cfa(RICLPM5.ext3, data = datMI, missing = &#39;ML&#39;)
+
+summary(RICLPM5.ext3.fit, standardized = T)</code></pre>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-lavaan">
+<p>Rosseel, Yves. 2012. “lavaan: An R Package for Structural Equation Modeling.” <em>Journal of Statistical Software</em> 48 (2): 1–36. <a href="http://www.jstatsoft.org/v48/i02/">http://www.jstatsoft.org/v48/i02/</a>.</p>
+</div>
+<div id="ref-tidyverse">
+<p>Wickham, Hadley. 2017. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>. <a href="https://CRAN.R-project.org/package=tidyverse">https://CRAN.R-project.org/package=tidyverse</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

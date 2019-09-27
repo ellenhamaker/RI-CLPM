@@ -1,0 +1,14 @@
+name: "RI-CLPM"
+output_dir: "docs"
+navbar:
+  title: "The RI-CLPM & Extensions"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Mplus"
+      href: mplus.html
+    - text: "Lavaan (R)"
+      href: lavaan.html
+    
+
+ 
