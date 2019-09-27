@@ -1,0 +1,25 @@
+---
+title: "The RI-CLPM & Extensions"
+author: "[Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) and [Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) at Utrecht University"
+---
+
+----
+
+### The Random Intercept Cross-Lagged Panel Model
+The random intercept cross-lagged panel model (RI-CLPM) is rapidly gaining popularity as a structural equation modeling approach to longitudinal data. It allows for the decomposition of observed scores into within-person dynamics and between-person differences. 
+
+This website serves as supplementary material to the paper .... Here, you can find code for specifing the RI-CLPM and numerous extensions in both M*plus* and R (using the `Lavaan`-package). Use the top menu to navigate to the M*plus* syntax or R code. You can find the full article at ...
+
+----
+
+### Extensions
+The extensions that are discussed in this project are:
+
+1. Including a time-invariant predictor. 
+2. Doing multiple group analysis. 
+3. Using multiple indictors for variables. 
+
+----
+
+### Contact
+Questions can be addressed to the first author of the corresponding article, [prof. Dr. Ellen Hamaker](mailto:e.l.hamaker@uu.nl). 
