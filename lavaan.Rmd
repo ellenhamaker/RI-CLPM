@@ -1,7 +1,5 @@
 ---
-title: "Extensions of the RI-CLPM using Lavaan"
-author: "Ellen L. Hamaker, & Jeroen D. Mulder"
-date: "September 30th 2019"
+title: "RI-CLPM (and Extensions) using Lavaan (R)"
 output: 
   html_document:
     toc:  true
@@ -24,8 +22,6 @@ require(tidyverse)
 
 # Load in the data. 
 ## Traditional RI-CLPM
-## "/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPM/RICLPM.dat"
-## "C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat"
 dat <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat",
                   col.names = c("x1", "y1",
                                 "x2", "y2", 
@@ -34,8 +30,6 @@ dat <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.da
 head(dat)
 
 # Extension 1
-## "/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPMZ/RICLPMZ.dat"
-## "C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat"
 datZ <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat",
                    col.names = c("x1", "x2", "x3", "x4",
                                 "y1", "y2", "y3", "y4", 
@@ -43,8 +37,6 @@ datZ <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ
 head(datZ)
 
 ## Extension 2
-## "/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MG RI-CLPM/MGRICLPM.dat"
-## "C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat"
 datMG <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat",
                     col.names = c("x1", "x2", "x3", "x4",
                                 "y1", "y2", "y3", "y4", 
@@ -52,8 +44,6 @@ datMG <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRI
 head(datMG)
 
 # Extension 3
-## "/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MI RI-CLPM/MIRICLPM.dat"
-## "C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat"
 datMI <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat",
                    col.names = c("x11", "x12", "x13",
                                 "x21", "x22", "x23",
@@ -67,6 +57,8 @@ datMI <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRI
 head(datMI)
 
 ```
+
+---
 
 ## The RI-CLPM {.tabset}
 
@@ -133,11 +125,7 @@ summary(RICLPM.fit, standardized = T)
 ```
 
 ### Constraints over time
-Below we specify a RI-CLPM with:
-
-1. fixed auto-regressive and cross-lagged relations over time,
-2. time-invariant (residual) (co-)variances in the within-person part,
-3. constrained grand means over time. 
+Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time. 
 
 Please note that fixing parameters in Lavaan is done by something called **premultiplication**. It means that we have to add (1) the number that we want to fix the parameter to and (2) an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. 
 
@@ -210,6 +198,8 @@ RICLPM3.fit <- lavaan(RICLPM3, data = dat, missing = 'ML',
 
 summary(RICLPM3.fit, standardized = T)
 ```
+
+---
 
 ## Extension 1: time-invariant predictor $z_{1}$ {.tabset}
 
@@ -342,6 +332,8 @@ RICLPM1.ext1.fit <- lavaan(RICLPM1.ext1, data = datZ, missing = 'ML',
 summary(RICLPM1.ext1.fit, standardized = T)
 ```
 
+---
+
 ## Extension 2: multiple group {.tabset}
 
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. 
@@ -473,6 +465,8 @@ summary(RICLPM2.ext2.fit)
 ```
 
 
+---
+
 ## Extension 3: multiple indicator {.tabset}
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
@@ -575,16 +569,16 @@ RICLPM2.ext3 <- '
   
   # Factor models for x at 4 waves: constrained factor 
   # loadings over time.
-  WFX1 =~ L1*x11 + L2*x12 + L3*x13
-  WFX2 =~ L1*x21 + L2*x22 + L3*x23
-  WFX3 =~ L1*x31 + L2*x32 + L3*x33
-  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  WFX1 =~ a*x11 + b*x12 + c*x13
+  WFX2 =~ a*x21 + b*x22 + c*x23
+  WFX3 =~ a*x31 + b*x32 + c*x33
+  WFX4 =~ a*x41 + b*x42 + c*x43
   
   # Factor models for y at 4 waves.
-  WFY1 =~ L4*y11 + L5*y12 + L6*y13
-  WFY2 =~ L4*y21 + L5*y22 + L6*y23
-  WFY3 =~ L4*y31 + L5*y32 + L6*y33
-  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  WFY1 =~ d*y11 + e*y12 + f*y13
+  WFY2 =~ d*y21 + e*y22 + f*y23
+  WFY3 =~ d*y31 + e*y32 + f*y33
+  WFY4 =~ d*y41 + e*y42 + f*y43
   
   #########################
   # WITHIN PART: DYNAMICS #
@@ -639,31 +633,30 @@ RICLPM3.ext3 <- '
   # WITHIN PART: MEASUREMENT MODEL #
   ##################################
   
-  # Factor models for x at 4 waves: constrained 
-  # factor loadings over time.
-  WFX1 =~ L1*x11 + L2*x12 + L3*x13
-  WFX2 =~ L1*x21 + L2*x22 + L3*x23
-  WFX3 =~ L1*x31 + L2*x32 + L3*x33
-  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  # Factor models for x at 4 waves: constrained factor 
+  # loadings over time.
+  WFX1 =~ a*x11 + b*x12 + c*x13
+  WFX2 =~ a*x21 + b*x22 + c*x23
+  WFX3 =~ a*x31 + b*x32 + c*x33
+  WFX4 =~ a*x41 + b*x42 + c*x43
   
-  # Factor models for y at 4 waves: constrained 
-  # factor loadings over time. 
-  WFY1 =~ L4*y11 + L5*y12 + L6*y13
-  WFY2 =~ L4*y21 + L5*y22 + L6*y23
-  WFY3 =~ L4*y31 + L5*y32 + L6*y33
-  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  # Factor models for y at 4 waves.
+  WFY1 =~ d*y11 + e*y12 + f*y13
+  WFY2 =~ d*y21 + e*y22 + f*y23
+  WFY3 =~ d*y31 + e*y32 + f*y33
+  WFY4 =~ d*y41 + e*y42 + f*y43
   
   # Constrained intercepts over time (this is necessary
   # for strong factorial invariance; without these 
   # contraints we have week factorial invariance). 
   
-  x11 + x21 + x31 + x41 ~ i1*1
-  x12 + x22 + x32 + x42 ~ i2*1
-  x13 + x23 + x33 + x43 ~ i3*1
+  x11 + x21 + x31 + x41 ~ g*1
+  x12 + x22 + x32 + x42 ~ h*1
+  x13 + x23 + x33 + x43 ~ i*1
 
-  y11 + y21 + y31 + y41 ~ i4*1
-  y12 + y22 + y32 + y42 ~ i5*1
-  y13 + y23 + y33 + y43 ~ i6*1
+  y11 + y21 + y31 + y41 ~ j*1
+  y12 + y22 + y32 + y42 ~ k*1
+  y13 + y23 + y33 + y43 ~ l*1
   
   # Free latent means from t = 2 onward (only do this in 
   # combination with the constraints on the intercepts; 
@@ -697,7 +690,7 @@ RICLPM3.ext3.fit <- cfa(RICLPM3.ext3, data = datMI, missing = 'ML')
 summary(RICLPM3.ext3.fit, standardized = T)
 ```
 
-### Step 4
+### Extra
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.
 
 ```{r MI_RI-CLPM_step_4.inp, results = F}
@@ -721,8 +714,8 @@ RICLPM4.ext3 <- '
   # loadings to be identical to the within-person factor 
   # loadings. 
   
-  RIX =~ L1*RIX1 + L2*RIX2 + L3*RIX3
-  RIY =~ L4*RIY1 + L5*RIY2 + L6*RIY3
+  RIX =~ a*RIX1 + b*RIX2 + c*RIX3
+  RIY =~ d*RIY1 + e*RIY2 + f*RIY3
   
   # Constrain measurement error variances of the second order
   # factor model to 0. 
@@ -744,29 +737,28 @@ RICLPM4.ext3 <- '
   
   # Factor models for x at 4 waves: constrained factor 
   # loadings over time.
-  WFX1 =~ L1*x11 + L2*x12 + L3*x13
-  WFX2 =~ L1*x21 + L2*x22 + L3*x23
-  WFX3 =~ L1*x31 + L2*x32 + L3*x33
-  WFX4 =~ L1*x41 + L2*x42 + L3*x43
+  WFX1 =~ a*x11 + b*x12 + c*x13
+  WFX2 =~ a*x21 + b*x22 + c*x23
+  WFX3 =~ a*x31 + b*x32 + c*x33
+  WFX4 =~ a*x41 + b*x42 + c*x43
   
-  # Factor models for y at 4 waves: constrained factor 
-  # loadings over time. 
-  WFY1 =~ L4*y11 + L5*y12 + L6*y13
-  WFY2 =~ L4*y21 + L5*y22 + L6*y23
-  WFY3 =~ L4*y31 + L5*y32 + L6*y33
-  WFY4 =~ L4*y41 + L5*y42 + L6*y43
+  # Factor models for y at 4 waves.
+  WFY1 =~ d*y11 + e*y12 + f*y13
+  WFY2 =~ d*y21 + e*y22 + f*y23
+  WFY3 =~ d*y31 + e*y32 + f*y33
+  WFY4 =~ d*y41 + e*y42 + f*y43
   
   # Constrained intercepts over time (this is necessary for 
   # strong factorial invariance; without these contraints 
   # we have week factorial invariance). 
   
-  x11 + x21 + x31 + x41 ~ i1*1
-  x12 + x22 + x32 + x42 ~ i2*1
-  x13 + x23 + x33 + x43 ~ i3*1
+  x11 + x21 + x31 + x41 ~ g*1
+  x12 + x22 + x32 + x42 ~ h*1
+  x13 + x23 + x33 + x43 ~ i*1
 
-  y11 + y21 + y31 + y41 ~ i4*1
-  y12 + y22 + y32 + y42 ~ i5*1
-  y13 + y23 + y33 + y43 ~ i6*1
+  y11 + y21 + y31 + y41 ~ j*1
+  y12 + y22 + y32 + y42 ~ k*1
+  y13 + y23 + y33 + y43 ~ l*1
   
   # Free latent means from t = 2 onward (only do this in 
   # combination with the constraints on the intercepts; 
@@ -785,7 +777,6 @@ RICLPM4.ext3 <- '
   WFX4 + WFY4 ~ WFX3 + WFY3
   
   # Estimate the correlations within the same wave.
-  WFX1 ~~ WFY1
   WFX2 ~~ WFY2
   WFX3 ~~ WFY3 
   WFX4 ~~ WFY4
@@ -797,7 +788,6 @@ RICLPM4.ext3 <- '
   # Set correlations between the between-factors (random 
   # intercepts) and within-factors at wave 1 at 0. 
   RIX + RIY ~~ 0*WFX1 + 0*WFY1
-  
 
 '
 RICLPM4.ext3.fit <- cfa(RICLPM4.ext3, data = datMI, missing = 'ML')
@@ -805,7 +795,7 @@ RICLPM4.ext3.fit <- cfa(RICLPM4.ext3, data = datMI, missing = 'ML')
 summary(RICLPM4.ext3.fit, standardized = T)
 ```
 
-### Step 5
+### Step 4
 Multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with the RI-CLPM at the latent level. 
 
 ```{r MI_RI-CLPM_step_5.inp, results = F, warning=F}
@@ -816,29 +806,28 @@ RICLPM5.ext3 <- '
   
   # Factor models for x at 4 waves: constrained factor 
   # loadings over time.
-  FX1 =~ L1*x11 + L2*x12 + L3*x13
-  FX2 =~ L1*x21 + L2*x22 + L3*x23
-  FX3 =~ L1*x31 + L2*x32 + L3*x33
-  FX4 =~ L1*x41 + L2*x42 + L3*x43
+  FX1 =~ a*x11 + b*x12 + c*x13
+  FX2 =~ a*x21 + b*x22 + c*x23
+  FX3 =~ a*x31 + b*x32 + c*x33
+  FX4 =~ a*x41 + b*x42 + c*x43
   
-  # Factor models for y at 4 waves: constrained factor 
-  # loadings over time. 
-  FY1 =~ L4*y11 + L5*y12 + L6*y13
-  FY2 =~ L4*y21 + L5*y22 + L6*y23
-  FY3 =~ L4*y31 + L5*y32 + L6*y33
-  FY4 =~ L4*y41 + L5*y42 + L6*y43
+  # Factor models for y at 4 waves.
+  FY1 =~ d*y11 + e*y12 + f*y13
+  FY2 =~ d*y21 + e*y22 + f*y23
+  FY3 =~ d*y31 + e*y32 + f*y33
+  FY4 =~ d*y41 + e*y42 + f*y43
   
   # Constrained intercepts over time (this is necessary 
   # for strong factorial invariance; without these contraints
   # we have week factorial invariance). 
   
-  x11 + x21 + x31 + x41 ~ i1*1
-  x12 + x22 + x32 + x42 ~ i2*1
-  x13 + x23 + x33 + x43 ~ i3*1
+  x11 + x21 + x31 + x41 ~ g*1
+  x12 + x22 + x32 + x42 ~ h*1
+  x13 + x23 + x33 + x43 ~ i*1
 
-  y11 + y21 + y31 + y41 ~ i4*1
-  y12 + y22 + y32 + y42 ~ i5*1
-  y13 + y23 + y33 + y43 ~ i6*1
+  y11 + y21 + y31 + y41 ~ j*1
+  y12 + y22 + y32 + y42 ~ k*1
+  y13 + y23 + y33 + y43 ~ l*1
 
   # Free latent means from t = 2 onward (only do this in 
   # combination with the constraints on the intercepts; without
@@ -886,7 +875,6 @@ RICLPM5.ext3 <- '
   WFX4 + WFY4 ~ WFX3 + WFY3
   
   # Estimate the correlations within the same wave.
-  WFX1 ~~ WFY1
   WFX2 ~~ WFY2
   WFX3 ~~ WFY3 
   WFX4 ~~ WFY4
@@ -904,6 +892,8 @@ RICLPM5.ext3.fit <- cfa(RICLPM5.ext3, data = datMI, missing = 'ML')
 
 summary(RICLPM5.ext3.fit, standardized = T)
 ```
+
+---
 
 ## References
 

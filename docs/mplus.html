@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Ellen L. Hamaker, &amp; Jeroen D. Mulder" />
 
 
-<title>Extensions of the RI-CLPM using Mplus</title>
+<title>RI-CLPM (and Extensions) using Mplus</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -404,16 +403,16 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Extensions of the RI-CLPM using Mplus</h1>
-<h4 class="author">Ellen L. Hamaker, &amp; Jeroen D. Mulder</h4>
-<h4 class="date">September 30th 2019</h4>
+<h1 class="title toc-ignore">RI-CLPM (and Extensions) using Mplus</h1>
 
 </div>
 
 
+<hr />
 <div id="setup" class="section level2">
 <h2>Setup</h2>
-<p>For Mplus <span class="citation">(Muthén and Muthén, n.d.)</span> to work properly, please make sure that you save the input file with the model specification (<em>example.inp</em>) in the same folder as the data (<em>example.dat</em>).</p>
+<p>For Mplus <span class="citation">(Muthén and Muthén 2017)</span> to work properly, please make sure that you save the input file with the model specification (<em>example.inp</em>) in the same folder as the data (<em>example.dat</em>).</p>
+<hr />
 </div>
 <div id="the-ri-clpm" class="section level2 tabset">
 <h2>The RI-CLPM</h2>
@@ -468,52 +467,55 @@ OUTPUT:     TECH1 STDYX SAMPSTAT;</code></pre>
 </div>
 <div id="constraints-over-time" class="section level3">
 <h3>Constraints over time</h3>
-<p>Below we specify a RI-CLPM with:</p>
-<ol style="list-style-type: decimal">
-<li>fixed auto-regressive and cross-lagged relations over time,</li>
-<li>time-invariant (residual) (co-)variances in the within-person part,</li>
-<li><p>constrained grand means over time.</p>
-<p>TITLE: Fit the RI-CLPM</p>
-<p>DATA: FILE IS RICLPM.dat;</p>
-<p>VARIABLE: NAMES ARE x1 y1 x2 y2 x3 y3 x4 y4;</p>
-<p>MODEL: ! Create two individual factors (random intercepts) RI_x BY <a href="mailto:x1@1" class="email">x1@1</a> <a href="mailto:x2@1" class="email">x2@1</a> <a href="mailto:x3@1" class="email">x3@1</a> <a href="mailto:x4@1" class="email">x4@1</a>; RI_y BY <a href="mailto:y1@1" class="email">y1@1</a> <a href="mailto:y2@1" class="email">y2@1</a> <a href="mailto:y3@1" class="email">y3@1</a> <a href="mailto:y4@1" class="email">y4@1</a>;</p>
-<pre><code>         ! Create within-person centered variables
-         wx1 BY x1@1; wx2 BY x2@1;
-         wx3 BY x3@1; wx4 BY x4@1;
-         wy1 BY y1@1; wy2 BY y2@1;
-         wy3 BY y3@1; wy4 BY y4@1;
+<p>Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time.</p>
+<pre><code>TITLE:      Fit the RI-CLPM 
+    
+DATA:       FILE IS RICLPM.dat;  
+                
+VARIABLE:   NAMES ARE x1 y1 x2 y2 x3 y3 x4 y4;
+    
+MODEL:      ! Create two individual factors (random intercepts)
+            RI_x BY x1@1 x2@1 x3@1 x4@1;
+            RI_y BY y1@1 y2@1 y3@1 y4@1;
 
-         ! Constrain the measurement error variances to zero
-         x1-y4@0;
+            ! Create within-person centered variables
+            wx1 BY x1@1; wx2 BY x2@1;
+            wx3 BY x3@1; wx4 BY x4@1;
+            wy1 BY y1@1; wy2 BY y2@1;
+            wy3 BY y3@1; wy4 BY y4@1;
 
-         ! Constrain the grand means over time
-         [x1 x2 x3 x4] (mx);
-         [y1 y2 y3 y4] (my);
+            ! Constrain the measurement error variances to zero
+            x1-y4@0;
 
-         ! Estimate the lagged effects between 
-         ! the within-person centered variables
-         wx2 ON wx1 wy1 (a g);
-         wx3 ON wx2 wy2 (a g);
-         wx4 ON wx3 wy3 (a g);
-         wy2 ON wx1 wy1 (b d);
-         wy3 ON wx2 wy2 (b d);
-         wy4 ON wx3 wy3 (b d);
+            ! Constrain the grand means over time
+            [x1 x2 x3 x4] (mx);
+            [y1 y2 y3 y4] (my);
 
-         ! Estimate the covariance between the within-person
-         ! centered variables at the first wave 
-         wx1 WITH wy1;
+            ! Estimate the lagged effects between 
+            ! the within-person centered variables
+            wx2 ON wx1 wy1 (a g);
+            wx3 ON wx2 wy2 (a g);
+            wx4 ON wx3 wy3 (a g);
+            wy2 ON wx1 wy1 (b d);
+            wy3 ON wx2 wy2 (b d);
+            wy4 ON wx3 wy3 (b d);
 
-         ! Constrain the residual variances and covariances to be invariant over time. 
-         wx2 WITH wy2 (cov); wx2 (vx); wy2 (vy);
-         wx3 WITH wy3 (cov); wx3 (vx); wy3 (vy);
-         wx4 WITH wy4 (cov); wx4 (vx); wy4 (vy);
+            ! Estimate the covariance between the within-person
+            ! centered variables at the first wave 
+            wx1 WITH wy1;
 
-         ! Fix the correlation between the individual factors and the other
-         ! exogenous variables to zero (by default these would be estimated)
-         RI_x WITH wx1@0 wy1@0;
-         RI_y WITH wx1@0 wy1@0;</code></pre>
-<p>OUTPUT: TECH1 STDYX SAMPSTAT;</p></li>
-</ol>
+            ! Constrain the residual variances and covariances to be invariant over time. 
+            wx2 WITH wy2 (cov); wx2 (vx); wy2 (vy);
+            wx3 WITH wy3 (cov); wx3 (vx); wy3 (vy);
+            wx4 WITH wy4 (cov); wx4 (vx); wy4 (vy);
+
+            ! Fix the correlation between the individual factors and the other
+            ! exogenous variables to zero (by default these would be estimated)
+            RI_x WITH wx1@0 wy1@0;
+            RI_y WITH wx1@0 wy1@0;
+            
+OUTPUT:     TECH1 STDYX SAMPSTAT;</code></pre>
+<hr />
 </div>
 </div>
 <div id="extension-1-time-invariant-predictor" class="section level2 tabset">
@@ -629,6 +631,7 @@ MODEL:      ! Create two individual factors (random intercepts)
             RIy WITH wx4@0 wy4@0;
        
 OUTPUT:     TECH1;</code></pre>
+<hr />
 </div>
 </div>
 <div id="extension-2-multiple-group" class="section level2 tabset">
@@ -695,9 +698,8 @@ MODEL G2:   ! Overrule the multiple group factor analysis default
 
 OUTPUT:     TECH1;</code></pre>
 </div>
-</div>
-<div id="constrained-lagged-parameters" class="section level1">
-<h1>## Constrained lagged-parameters</h1>
+<div id="constrained-lagged-parameters" class="section level3">
+<h3>Constrained lagged-parameters</h3>
 <p>Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagged-parameters are constrained to be equal over time.</p>
 <pre><code>TITLE:      Multiple group RI-CLPM 4 waves
             (overruling the Mplus multiple 
@@ -763,15 +765,18 @@ MODEL G2:   ! Overrule the multiple group factor analysis default
             wx4 wy4 ON wx3 wy3 (a3 b3 c3 d3);
          
 OUTPUT:     TECH1;</code></pre>
+<hr />
+</div>
+</div>
 <div id="extension-3-multiple-indicator" class="section level2 tabset">
 <h2>Extension 3: multiple indicator</h2>
 <p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with</p>
 <ol style="list-style-type: decimal">
-<li>random intercepts for each indicator separately.</li>
-<li>constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.</li>
-<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.</li>
-<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.</li>
-<li>constraints to ensure strong factorial invariance and the RI-CLPM at the latent level.</li>
+<li>Initial model (Step 1).</li>
+<li>Weak factorial invariance (Step 2).</li>
+<li>Strong factorial invariance (Step 3).</li>
+<li>Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra).</li>
+<li>The latent RI-CLPM (Step 4).</li>
 </ol>
 <div id="step-1" class="section level3">
 <h3>Step 1</h3>
@@ -795,6 +800,7 @@ MODEL:      !!!!!!!!!!!!!!!!
             RIX1 BY x11@1 x21@1 x31@1 x41@1;
             RIX2 BY x12@1 x22@1 x32@1 x42@1;
             RIX3 BY x13@1 x23@1 x33@1 x43@1;
+            
             RIY1 BY y11@1 y21@1 y31@1 y41@1;
             RIY2 BY y12@1 y22@1 y32@1 y42@1;
             RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -828,12 +834,12 @@ MODEL:      !!!!!!!!!!!!!!!!
             WFX2 ON WFY1 WFX1;
             WFX3 ON WFY2 WFX2;
             WFX4 ON WFY3 WFX3;
+            
             WFY2 ON WFY1 WFX1;
             WFY3 ON WFY2 WFX2;
             WFY4 ON WFY3 WFX3;
 
             ! Estimate the correlations within the same wave
-            WFX1 WITH WFY1;
             WFX2 WITH WFY2;
             WFX3 WITH WFY3;
             WFX4 WITH WFY4;
@@ -874,6 +880,7 @@ MODEL:    !!!!!!!!!!!!!!!!
           RIX1 BY x11@1 x21@1 x31@1 x41@1;
           RIX2 BY x12@1 x22@1 x32@1 x42@1;
           RIX3 BY x13@1 x23@1 x33@1 x43@1;
+          
           RIY1 BY y11@1 y21@1 y31@1 y41@1;
           RIY2 BY y12@1 y22@1 y32@1 y42@1;
           RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -888,17 +895,17 @@ MODEL:    !!!!!!!!!!!!!!!!
 
           ! Factor models for x at 4 waves
           ! constrained factor loadings over time
-          WFX1 BY x11-x13 (L1-L3);
-          WFX2 BY x21-x23 (L1-L3);
-          WFX3 BY x31-x33 (L1-L3);
-          WFX4 BY x41-x43 (L1-L3);
+          WFX1 BY x11-x13 (a b c);
+          WFX2 BY x21-x23 (a b c);
+          WFX3 BY x31-x33 (a b c);
+          WFX4 BY x41-x43 (a b c);
 
           ! Factor models for y at 4 waves
           ! constrained factor loadings over time
-          WFY1 BY y11-y13 (L4-L6);
-          WFY2 BY y21-y23 (L4-L6);
-          WFY3 BY y31-y33 (L4-L6);
-          WFY4 BY y41-y43 (L4-L6);
+          WFY1 BY y11-y13 (d e f);
+          WFY2 BY y21-y23 (d e f);
+          WFY3 BY y31-y33 (d e f);
+          WFY4 BY y41-y43 (d e f);
 
           !!!!!!!!!!!!!!!!!!!!!!!!!
           ! WITHIN PART: DYNAMICS !
@@ -909,12 +916,12 @@ MODEL:    !!!!!!!!!!!!!!!!
           WFX2 ON WFY1 WFX1;
           WFX3 ON WFY2 WFX2;
           WFX4 ON WFY3 WFX3;
+          
           WFY2 ON WFY1 WFX1;
           WFY3 ON WFY2 WFX2;
           WFY4 ON WFY3 WFX3;
 
           ! Estimate the correlations within the same wave
-          WFX1 WITH WFY1;
           WFX2 WITH WFY2;
           WFX3 WITH WFY3; 
           WFX4 WITH WFY4;
@@ -955,6 +962,7 @@ MODEL:      !!!!!!!!!!!!!!!!
             RIX1 BY x11@1 x21@1 x31@1 x41@1;
             RIX2 BY x12@1 x22@1 x32@1 x42@1;
             RIX3 BY x13@1 x23@1 x33@1 x43@1;
+            
             RIY1 BY y11@1 y21@1 y31@1 y41@1;
             RIY2 BY y12@1 y22@1 y32@1 y42@1;
             RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -969,30 +977,31 @@ MODEL:      !!!!!!!!!!!!!!!!
 
             ! Factor models for x at 4 waves
             ! constrained factor loadings over time
-            WFX1 BY x11-x13 (L1-L3);
-            WFX2 BY x21-x23 (L1-L3);
-            WFX3 BY x31-x33 (L1-L3);
-            WFX4 BY x41-x43 (L1-L3);
-
+            WFX1 BY x11-x13 (a b c);
+            WFX2 BY x21-x23 (a b c);
+            WFX3 BY x31-x33 (a b c);
+            WFX4 BY x41-x43 (a b c);
+  
             ! Factor models for y at 4 waves
             ! constrained factor loadings over time
-            WFY1 BY y11-y13 (L4-L6);
-            WFY2 BY y21-y23 (L4-L6);
-            WFY3 BY y31-y33 (L4-L6);
-            WFY4 BY y41-y43 (L4-L6);
+            WFY1 BY y11-y13 (d e f);
+            WFY2 BY y21-y23 (d e f);
+            WFY3 BY y31-y33 (d e f);
+            WFY4 BY y41-y43 (d e f);
 
             ! Constrained intercepts over time
             ! (this is necessary for strong factorial
             ! invariance; without these constraints
             ! we have weak factorial invariance)
-            [x11 x12 x13] (i1-i3);
-            [x21 x22 x23] (i1-i3);
-            [x31 x32 x33] (i1-i3);
-            [x41 x42 x43] (i1-i3);
-            [y11 y12 y13] (i4-i6);
-            [y21 y22 y23] (i4-i6);
-            [y31 y32 y33] (i4-i6);
-            [y41 y42 y43] (i4-i6);
+            [x11 x12 x13] (g h i);
+            [x21 x22 x23] (g h i);
+            [x31 x32 x33] (g h i);
+            [x41 x42 x43] (g h i);
+            
+            [y11 y12 y13] (j k l);
+            [y21 y22 y23] (j k l);
+            [y31 y32 y33] (j k l);
+            [y41 y42 y43] (j k l);
 
             ! Free latent means from t=2 onward
             ! (only do this in combination with the
@@ -1010,12 +1019,12 @@ MODEL:      !!!!!!!!!!!!!!!!
             WFX2 ON WFY1 WFX1;
             WFX3 ON WFY2 WFX2;
             WFX4 ON WFY3 WFX3;
+            
             WFY2 ON WFY1 WFX1;
             WFY3 ON WFY2 WFX2;
             WFY4 ON WFY3 WFX3;
 
             ! Estimate the correlations within the same wave
-            WFX1 WITH WFY1;
             WFX2 WITH WFY2;
             WFX3 WITH WFY3;
             WFX4 WITH WFY4;
@@ -1032,8 +1041,8 @@ MODEL:      !!!!!!!!!!!!!!!!
 
 OUTPUT: TECH1 TECH4;</code></pre>
 </div>
-<div id="step-4" class="section level3">
-<h3>Step 4</h3>
+<div id="extra" class="section level3">
+<h3>Extra</h3>
 <pre><code>TITLE:  Multiple indicator RI-CLPM 4 waves
         with 3 indicators for each variable
         at each wave (24 observed variables)
@@ -1058,6 +1067,7 @@ MODEL:    !!!!!!!!!!!!!!!!
           RIX1 BY x11@1 x21@1 x31@1 x41@1;
           RIX2 BY x12@1 x22@1 x32@1 x42@1;
           RIX3 BY x13@1 x23@1 x33@1 x43@1;
+          
           RIY1 BY y11@1 y21@1 y31@1 y41@1;
           RIY2 BY y12@1 y22@1 y32@1 y42@1;
           RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -1066,8 +1076,8 @@ MODEL:    !!!!!!!!!!!!!!!!
           ! variables, and another for all y variables
           ! and constrain the factor loading to be identical
           ! to the within-person factor loadings
-          RIX BY RIX1 RIX2 RIX3 (L1-L3);
-          RIY BY RIY1 RIY2 RIY3 (L4-L6);
+          RIX BY RIX1 RIX2 RIX3 (a b c);
+          RIY BY RIY1 RIY2 RIY3 (d e f);
 
           ! Constrain measurement error variances of the
           ! second order factor model to zero
@@ -1083,30 +1093,31 @@ MODEL:    !!!!!!!!!!!!!!!!
 
           ! Factor models for x at 4 waves
           ! constrained factor loadings over time
-          WFX1 BY x11-x13 (L1-L3);
-          WFX2 BY x21-x23 (L1-L3);
-          WFX3 BY x31-x33 (L1-L3);
-          WFX4 BY x41-x43 (L1-L3);
-
+          WFX1 BY x11-x13 (a b c);
+          WFX2 BY x21-x23 (a b c);
+          WFX3 BY x31-x33 (a b c);
+          WFX4 BY x41-x43 (a b c);
+  
           ! Factor models for y at 4 waves
           ! constrained factor loadings over time
-          WFY1 BY y11-y13 (L4-L6);
-          WFY2 BY y21-y23 (L4-L6);
-          WFY3 BY y31-y33 (L4-L6);
-          WFY4 BY y41-y43 (L4-L6);
+          WFY1 BY y11-y13 (d e f);
+          WFY2 BY y21-y23 (d e f);
+          WFY3 BY y31-y33 (d e f);
+          WFY4 BY y41-y43 (d e f);
 
           ! Constrained intercepts over time
           ! (this is necessary for strong factorial
           ! invariance; without these constraints
           ! we have weak factorial invariance)
-          [x11 x12 x13] (i1-i3);
-          [x21 x22 x23] (i1-i3);
-          [x31 x32 x33] (i1-i3);
-          [x41 x42 x43] (i1-i3);
-          [y11 y12 y13] (i4-i6);
-          [y21 y22 y23] (i4-i6);
-          [y31 y32 y33] (i4-i6);
-          [y41 y42 y43] (i4-i6);
+          [x11 x12 x13] (g h i);
+          [x21 x22 x23] (g h i);
+          [x31 x32 x33] (g h i);
+          [x41 x42 x43] (g h i);
+            
+          [y11 y12 y13] (j k l);
+          [y21 y22 y23] (j k l);
+          [y31 y32 y33] (j k l);
+          [y41 y42 y43] (j k l);
 
           ! Free latent means from t=2 onward
           ! (only do this in combination with the
@@ -1124,12 +1135,12 @@ MODEL:    !!!!!!!!!!!!!!!!
           WFX2 ON WFY1 WFX1;
           WFX3 ON WFY2 WFX2;
           WFX4 ON WFY3 WFX3;
+          
           WFY2 ON WFY1 WFX1;
           WFY3 ON WFY2 WFX2;
           WFY4 ON WFY3 WFX3;
 
           ! Estimate the correlations within the same wave
-          WFX1 WITH WFY1;
           WFX2 WITH WFY2;
           WFX3 WITH WFY3; 
           WFX4 WITH WFY4;
@@ -1146,8 +1157,8 @@ MODEL:    !!!!!!!!!!!!!!!!
                
 OUTPUT: TECH1 TECH4;</code></pre>
 </div>
-<div id="step-5" class="section level3">
-<h3>Step 5</h3>
+<div id="step-4" class="section level3">
+<h3>Step 4</h3>
 <pre><code>TITLE:  Multiple indicator RI-CLPM 4 waves
           with 3 indicators for each variable
           at each wave (24 observed variables)
@@ -1166,30 +1177,31 @@ MODEL:      !!!!!!!!!!!!!!!!!!!!!
 
             ! Factor models for x at 4 waves
             ! constrained factor loadings over time
-            FX1 BY x11-x13 (L1-L3);
-            FX2 BY x21-x23 (L1-L3);
-            FX3 BY x31-x33 (L1-L3);
-            FX4 BY x41-x43 (L1-L3);
-
+            FX1 BY x11-x13 (a b c);
+            FX2 BY x21-x23 (a b c);
+            FX3 BY x31-x33 (a b c);
+            FX4 BY x41-x43 (a b c);
+    
             ! Factor models for y at 4 waves
             ! constrained factor loadings over time
-            FY1 BY y11-y13 (L4-L6);
-            FY2 BY y21-y23 (L4-L6);
-            FY3 BY y31-y33 (L4-L6);
-            FY4 BY y41-y43 (L4-L6);
+            FY1 BY y11-y13 (d e f);
+            FY2 BY y21-y23 (d e f);
+            FY3 BY y31-y33 (d e f);
+            FY4 BY y41-y43 (d e f);
 
             ! Constrained intercepts over time
             ! (this is necessary for strong factorial
             ! invariance; without these constraints
             ! we have weak factorial invariance)
-            [x11 x12 x13] (i1-i3);
-            [x21 x22 x23] (i1-i3);
-            [x31 x32 x33] (i1-i3);
-            [x41 x42 x43] (i1-i3);
-            [y11 y12 y13] (i4-i6);
-            [y21 y22 y23] (i4-i6);
-            [y31 y32 y33] (i4-i6);
-            [y41 y42 y43] (i4-i6);
+            [x11 x12 x13] (g h i);
+            [x21 x22 x23] (g h i);
+            [x31 x32 x33] (g h i);
+            [x41 x42 x43] (g h i);
+            
+            [y11 y12 y13] (j k l);
+            [y21 y22 y23] (j k l);
+            [y31 y32 y33] (j k l);
+            [y41 y42 y43] (j k l);
 
             ! Free latent means from t=2 onward
             ! (only do this in combination with the
@@ -1219,6 +1231,7 @@ MODEL:      !!!!!!!!!!!!!!!!!!!!!
             WFX2 BY FX2@1;
             WFX3 BY FX3@1;
             WFX4 BY FX4@1;
+           
             WFY1 BY FY1@1;
             WFY2 BY FY2@1;
             WFY3 BY FY3@1;
@@ -1229,12 +1242,12 @@ MODEL:      !!!!!!!!!!!!!!!!!!!!!
             WFX2 ON WFY1 WFX1;
             WFX3 ON WFY2 WFX2;
             WFX4 ON WFY3 WFX3;
+            
             WFY2 ON WFY1 WFX1;
             WFY3 ON WFY2 WFX2;
             WFY4 ON WFY3 WFX3;
 
             ! Estimate the correlations within the same wave
-            WFX1 WITH WFY1;
             WFX2 WITH WFY2;
             WFX3 WITH WFY3;
             WFX4 WITH WFY4;
@@ -1250,14 +1263,14 @@ MODEL:      !!!!!!!!!!!!!!!!!!!!!
             RIX RIY WITH WFX1@0 WFY1@0;
 
 OUTPUT: TECH1 TECH4;</code></pre>
+<hr />
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <div id="refs" class="references">
 <div id="ref-Mplus8">
-<p>Muthén, L. K., and B. O. Muthén. n.d. <em>Mplus User’s Guide</em>. Eighth Edition. Los Angeles, CA: Muthén &amp; Muthén.</p>
-</div>
+<p>Muthén, L. K., and B. O. Muthén. 2017. <em>Mplus User’s Guide</em>. Eighth Edition. Los Angeles, CA: Muthén &amp; Muthén.</p>
 </div>
 </div>
 </div>
