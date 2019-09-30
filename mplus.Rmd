@@ -1,7 +1,5 @@
 ---
-title: "Extensions of the RI-CLPM using Mplus"
-author: "Ellen L. Hamaker, & Jeroen D. Mulder"
-date: "September 30th 2019"
+title: "RI-CLPM (and Extensions) using Mplus"
 output: 
   html_document:
     toc:  true
@@ -9,8 +7,12 @@ output:
 bibliography: references.bib
 ---
 
+---
+
 ## Setup
 For Mplus [@Mplus8] to work properly, please make sure that you save the input file with the model specification (*example.inp*) in the same folder as the data (*example.dat*). 
+
+---
 
 ## The RI-CLPM {.tabset}
 
@@ -65,18 +67,15 @@ The code for specifying the basic RI-CLPM is given below.
     OUTPUT:	    TECH1 STDYX SAMPSTAT;
 
 ### Constraints over time
-Below we specify a RI-CLPM with:
+Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time. 
 
-1. fixed auto-regressive and cross-lagged relations over time,
-2. time-invariant (residual) (co-)variances in the within-person part,
-3. constrained grand means over time. 
 
     TITLE:	    Fit the RI-CLPM 
-    
+        
     DATA:       FILE IS RICLPM.dat;  
-                
+                    
     VARIABLE:   NAMES ARE x1 y1 x2 y2 x3 y3 x4 y4;
-    
+        
     MODEL:	    ! Create two individual factors (random intercepts)
                 RI_x BY x1@1 x2@1 x3@1 x4@1;
                 RI_y BY y1@1 y2@1 y3@1 y4@1;
@@ -118,6 +117,9 @@ Below we specify a RI-CLPM with:
                 RI_y WITH wx1@0 wy1@0;
                 
     OUTPUT:	    TECH1 STDYX SAMPSTAT;
+
+
+---
 
 ## Extension 1: time-invariant predictor {.tabset}
 
@@ -234,6 +236,8 @@ Below you can find the code for the RI-CLPM with 4 waves and the random intercep
            
     OUTPUT:	    TECH1;
 
+---
+
 ## Extension 2: multiple group {.tabset}
 
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). 
@@ -300,7 +304,7 @@ Below you can find the code for a multiple group RI-CLPM with 4 waves.
     
     OUTPUT:	    TECH1;
 
-# ## Constrained lagged-parameters
+### Constrained lagged-parameters
 Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagged-parameters are constrained to be equal over time.
 
     TITLE:	    Multiple group RI-CLPM 4 waves
@@ -368,15 +372,18 @@ Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagge
              
     OUTPUT:	    TECH1;
 
+---
+
 ## Extension 3: multiple indicator {.tabset}
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
 
-1. random intercepts for each indicator separately.
-2. constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.
-3. constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.
-4. constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.
-5. constraints to ensure strong factorial invariance and the RI-CLPM at the latent level.
+1. Initial model (Step 1).
+2. Weak factorial invariance (Step 2).
+3. Strong factorial invariance (Step 3).
+4. Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra). 
+5. The latent RI-CLPM (Step 4).
+
 
 ### Step 1
 
@@ -400,6 +407,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 RIX1 BY x11@1 x21@1 x31@1 x41@1;
                 RIX2 BY x12@1 x22@1 x32@1 x42@1;
                 RIX3 BY x13@1 x23@1 x33@1 x43@1;
+                
                 RIY1 BY y11@1 y21@1 y31@1 y41@1;
                 RIY2 BY y12@1 y22@1 y32@1 y42@1;
                 RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -433,12 +441,12 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 WFX2 ON WFY1 WFX1;
                 WFX3 ON WFY2 WFX2;
                 WFX4 ON WFY3 WFX3;
+                
                 WFY2 ON WFY1 WFX1;
                 WFY3 ON WFY2 WFX2;
                 WFY4 ON WFY3 WFX3;
     
                 ! Estimate the correlations within the same wave
-                WFX1 WITH WFY1;
                 WFX2 WITH WFY2;
                 WFX3 WITH WFY3;
                 WFX4 WITH WFY4;
@@ -479,6 +487,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
               RIX1 BY x11@1 x21@1 x31@1 x41@1;
               RIX2 BY x12@1 x22@1 x32@1 x42@1;
               RIX3 BY x13@1 x23@1 x33@1 x43@1;
+              
               RIY1 BY y11@1 y21@1 y31@1 y41@1;
               RIY2 BY y12@1 y22@1 y32@1 y42@1;
               RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -493,17 +502,17 @@ Use the tabs below to navigate to the model specification of a multiple indicato
     
               ! Factor models for x at 4 waves
               ! constrained factor loadings over time
-              WFX1 BY x11-x13 (L1-L3);
-              WFX2 BY x21-x23 (L1-L3);
-              WFX3 BY x31-x33 (L1-L3);
-              WFX4 BY x41-x43 (L1-L3);
+              WFX1 BY x11-x13 (a b c);
+              WFX2 BY x21-x23 (a b c);
+              WFX3 BY x31-x33 (a b c);
+              WFX4 BY x41-x43 (a b c);
     
               ! Factor models for y at 4 waves
               ! constrained factor loadings over time
-              WFY1 BY y11-y13 (L4-L6);
-              WFY2 BY y21-y23 (L4-L6);
-              WFY3 BY y31-y33 (L4-L6);
-              WFY4 BY y41-y43 (L4-L6);
+              WFY1 BY y11-y13 (d e f);
+              WFY2 BY y21-y23 (d e f);
+              WFY3 BY y31-y33 (d e f);
+              WFY4 BY y41-y43 (d e f);
     
               !!!!!!!!!!!!!!!!!!!!!!!!!
               ! WITHIN PART: DYNAMICS !
@@ -514,12 +523,12 @@ Use the tabs below to navigate to the model specification of a multiple indicato
               WFX2 ON WFY1 WFX1;
               WFX3 ON WFY2 WFX2;
               WFX4 ON WFY3 WFX3;
+              
               WFY2 ON WFY1 WFX1;
               WFY3 ON WFY2 WFX2;
               WFY4 ON WFY3 WFX3;
     
               ! Estimate the correlations within the same wave
-              WFX1 WITH WFY1;
               WFX2 WITH WFY2;
               WFX3 WITH WFY3; 
               WFX4 WITH WFY4;
@@ -560,6 +569,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 RIX1 BY x11@1 x21@1 x31@1 x41@1;
                 RIX2 BY x12@1 x22@1 x32@1 x42@1;
                 RIX3 BY x13@1 x23@1 x33@1 x43@1;
+                
                 RIY1 BY y11@1 y21@1 y31@1 y41@1;
                 RIY2 BY y12@1 y22@1 y32@1 y42@1;
                 RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -574,30 +584,31 @@ Use the tabs below to navigate to the model specification of a multiple indicato
     
                 ! Factor models for x at 4 waves
                 ! constrained factor loadings over time
-                WFX1 BY x11-x13 (L1-L3);
-                WFX2 BY x21-x23 (L1-L3);
-                WFX3 BY x31-x33 (L1-L3);
-                WFX4 BY x41-x43 (L1-L3);
-    
+                WFX1 BY x11-x13 (a b c);
+                WFX2 BY x21-x23 (a b c);
+                WFX3 BY x31-x33 (a b c);
+                WFX4 BY x41-x43 (a b c);
+      
                 ! Factor models for y at 4 waves
                 ! constrained factor loadings over time
-                WFY1 BY y11-y13 (L4-L6);
-                WFY2 BY y21-y23 (L4-L6);
-                WFY3 BY y31-y33 (L4-L6);
-                WFY4 BY y41-y43 (L4-L6);
+                WFY1 BY y11-y13 (d e f);
+                WFY2 BY y21-y23 (d e f);
+                WFY3 BY y31-y33 (d e f);
+                WFY4 BY y41-y43 (d e f);
     
                 ! Constrained intercepts over time
                 ! (this is necessary for strong factorial
                 ! invariance; without these constraints
                 ! we have weak factorial invariance)
-                [x11 x12 x13] (i1-i3);
-                [x21 x22 x23] (i1-i3);
-                [x31 x32 x33] (i1-i3);
-                [x41 x42 x43] (i1-i3);
-                [y11 y12 y13] (i4-i6);
-                [y21 y22 y23] (i4-i6);
-                [y31 y32 y33] (i4-i6);
-                [y41 y42 y43] (i4-i6);
+                [x11 x12 x13] (g h i);
+                [x21 x22 x23] (g h i);
+                [x31 x32 x33] (g h i);
+                [x41 x42 x43] (g h i);
+                
+                [y11 y12 y13] (j k l);
+                [y21 y22 y23] (j k l);
+                [y31 y32 y33] (j k l);
+                [y41 y42 y43] (j k l);
     
                 ! Free latent means from t=2 onward
                 ! (only do this in combination with the
@@ -615,12 +626,12 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 WFX2 ON WFY1 WFX1;
                 WFX3 ON WFY2 WFX2;
                 WFX4 ON WFY3 WFX3;
+                
                 WFY2 ON WFY1 WFX1;
                 WFY3 ON WFY2 WFX2;
                 WFY4 ON WFY3 WFX3;
     
                 ! Estimate the correlations within the same wave
-                WFX1 WITH WFY1;
                 WFX2 WITH WFY2;
                 WFX3 WITH WFY3;
                 WFX4 WITH WFY4;
@@ -637,7 +648,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
     
     OUTPUT:	TECH1 TECH4;
 
-### Step 4
+### Extra
 
     TITLE:	Multiple indicator RI-CLPM 4 waves
             with 3 indicators for each variable
@@ -663,6 +674,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
               RIX1 BY x11@1 x21@1 x31@1 x41@1;
               RIX2 BY x12@1 x22@1 x32@1 x42@1;
               RIX3 BY x13@1 x23@1 x33@1 x43@1;
+              
               RIY1 BY y11@1 y21@1 y31@1 y41@1;
               RIY2 BY y12@1 y22@1 y32@1 y42@1;
               RIY3 BY y13@1 y23@1 y33@1 y43@1;
@@ -671,8 +683,8 @@ Use the tabs below to navigate to the model specification of a multiple indicato
               ! variables, and another for all y variables
               ! and constrain the factor loading to be identical
               ! to the within-person factor loadings
-              RIX BY RIX1 RIX2 RIX3 (L1-L3);
-              RIY BY RIY1 RIY2 RIY3 (L4-L6);
+              RIX BY RIX1 RIX2 RIX3 (a b c);
+              RIY BY RIY1 RIY2 RIY3 (d e f);
     
               ! Constrain measurement error variances of the
               ! second order factor model to zero
@@ -688,30 +700,31 @@ Use the tabs below to navigate to the model specification of a multiple indicato
     
               ! Factor models for x at 4 waves
               ! constrained factor loadings over time
-              WFX1 BY x11-x13 (L1-L3);
-              WFX2 BY x21-x23 (L1-L3);
-              WFX3 BY x31-x33 (L1-L3);
-              WFX4 BY x41-x43 (L1-L3);
-    
+              WFX1 BY x11-x13 (a b c);
+              WFX2 BY x21-x23 (a b c);
+              WFX3 BY x31-x33 (a b c);
+              WFX4 BY x41-x43 (a b c);
+      
               ! Factor models for y at 4 waves
               ! constrained factor loadings over time
-              WFY1 BY y11-y13 (L4-L6);
-              WFY2 BY y21-y23 (L4-L6);
-              WFY3 BY y31-y33 (L4-L6);
-              WFY4 BY y41-y43 (L4-L6);
+              WFY1 BY y11-y13 (d e f);
+              WFY2 BY y21-y23 (d e f);
+              WFY3 BY y31-y33 (d e f);
+              WFY4 BY y41-y43 (d e f);
     
               ! Constrained intercepts over time
               ! (this is necessary for strong factorial
               ! invariance; without these constraints
               ! we have weak factorial invariance)
-              [x11 x12 x13] (i1-i3);
-              [x21 x22 x23] (i1-i3);
-              [x31 x32 x33] (i1-i3);
-              [x41 x42 x43] (i1-i3);
-              [y11 y12 y13] (i4-i6);
-              [y21 y22 y23] (i4-i6);
-              [y31 y32 y33] (i4-i6);
-              [y41 y42 y43] (i4-i6);
+              [x11 x12 x13] (g h i);
+              [x21 x22 x23] (g h i);
+              [x31 x32 x33] (g h i);
+              [x41 x42 x43] (g h i);
+                
+              [y11 y12 y13] (j k l);
+              [y21 y22 y23] (j k l);
+              [y31 y32 y33] (j k l);
+              [y41 y42 y43] (j k l);
     
               ! Free latent means from t=2 onward
               ! (only do this in combination with the
@@ -729,12 +742,12 @@ Use the tabs below to navigate to the model specification of a multiple indicato
               WFX2 ON WFY1 WFX1;
               WFX3 ON WFY2 WFX2;
               WFX4 ON WFY3 WFX3;
+              
               WFY2 ON WFY1 WFX1;
               WFY3 ON WFY2 WFX2;
               WFY4 ON WFY3 WFX3;
     
               ! Estimate the correlations within the same wave
-              WFX1 WITH WFY1;
               WFX2 WITH WFY2;
               WFX3 WITH WFY3; 
               WFX4 WITH WFY4;
@@ -751,7 +764,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                    
     OUTPUT:	TECH1 TECH4;
 
-### Step 5
+### Step 4
 
     TITLE:	Multiple indicator RI-CLPM 4 waves
               with 3 indicators for each variable
@@ -771,30 +784,31 @@ Use the tabs below to navigate to the model specification of a multiple indicato
     
                 ! Factor models for x at 4 waves
                 ! constrained factor loadings over time
-                FX1 BY x11-x13 (L1-L3);
-                FX2 BY x21-x23 (L1-L3);
-                FX3 BY x31-x33 (L1-L3);
-                FX4 BY x41-x43 (L1-L3);
-    
+                FX1 BY x11-x13 (a b c);
+                FX2 BY x21-x23 (a b c);
+                FX3 BY x31-x33 (a b c);
+                FX4 BY x41-x43 (a b c);
+        
                 ! Factor models for y at 4 waves
                 ! constrained factor loadings over time
-                FY1 BY y11-y13 (L4-L6);
-                FY2 BY y21-y23 (L4-L6);
-                FY3 BY y31-y33 (L4-L6);
-                FY4 BY y41-y43 (L4-L6);
+                FY1 BY y11-y13 (d e f);
+                FY2 BY y21-y23 (d e f);
+                FY3 BY y31-y33 (d e f);
+                FY4 BY y41-y43 (d e f);
     
                 ! Constrained intercepts over time
                 ! (this is necessary for strong factorial
                 ! invariance; without these constraints
                 ! we have weak factorial invariance)
-                [x11 x12 x13] (i1-i3);
-                [x21 x22 x23] (i1-i3);
-                [x31 x32 x33] (i1-i3);
-                [x41 x42 x43] (i1-i3);
-                [y11 y12 y13] (i4-i6);
-                [y21 y22 y23] (i4-i6);
-                [y31 y32 y33] (i4-i6);
-                [y41 y42 y43] (i4-i6);
+                [x11 x12 x13] (g h i);
+                [x21 x22 x23] (g h i);
+                [x31 x32 x33] (g h i);
+                [x41 x42 x43] (g h i);
+                
+                [y11 y12 y13] (j k l);
+                [y21 y22 y23] (j k l);
+                [y31 y32 y33] (j k l);
+                [y41 y42 y43] (j k l);
     
                 ! Free latent means from t=2 onward
                 ! (only do this in combination with the
@@ -824,6 +838,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 WFX2 BY FX2@1;
                 WFX3 BY FX3@1;
                 WFX4 BY FX4@1;
+               
                 WFY1 BY FY1@1;
                 WFY2 BY FY2@1;
                 WFY3 BY FY3@1;
@@ -834,12 +849,12 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 WFX2 ON WFY1 WFX1;
                 WFX3 ON WFY2 WFX2;
                 WFX4 ON WFY3 WFX3;
+                
                 WFY2 ON WFY1 WFX1;
                 WFY3 ON WFY2 WFX2;
                 WFY4 ON WFY3 WFX3;
     
                 ! Estimate the correlations within the same wave
-                WFX1 WITH WFY1;
                 WFX2 WITH WFY2;
                 WFX3 WITH WFY3;
                 WFX4 WITH WFY4;
@@ -855,6 +870,8 @@ Use the tabs below to navigate to the model specification of a multiple indicato
                 RIX RIY WITH WFX1@0 WFY1@0;
     
     OUTPUT:	TECH1 TECH4;
+
+---
 
 ## References
 
