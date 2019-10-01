@@ -1,5 +1,5 @@
 ---
-title: "RI-CLPM (and Extensions) using Lavaan (R)"
+title: "RI-CLPM (and Extensions) using Lavaan"
 output: 
   html_document:
     toc:  true
@@ -8,17 +8,17 @@ output:
 bibliography: references.bib
 ---
 
+---
+
 ## Setup
 Below you can find the code for installing and loading the required packages `Lavaan` [@lavaan] and `Tidyverse` [@tidyverse], as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the `file.choose()`-function. 
 
 ```{r setup, results = F, message = F}
 # If necessary, install the 'Lavaan' and 'Tidyverse' packages. 
 # install.packages('lavaan', dependencies = T)
-# install.packages('tidyverse', dependencies = T)
 
 # Load the required packages. 
 require(lavaan) 
-require(tidyverse)
 
 # Load in the data. 
 ## Traditional RI-CLPM
@@ -201,7 +201,7 @@ summary(RICLPM3.fit, standardized = T)
 
 ---
 
-## Extension 1: time-invariant predictor $z_{1}$ {.tabset}
+## Extension 1: time-invariant predictor {.tabset}
 
 Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts.  
 
@@ -471,16 +471,16 @@ summary(RICLPM2.ext2.fit)
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
 
-1. random intercepts for each indicator separately.
-2. constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.
-3. constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.
-4. constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.
-5. constraints to ensure strong factorial invariance and the RI-CLPM at the latent level.
+1. Initial model (Step 1).
+2. Weak factorial invariance (Step 2).
+3. Strong factorial invariance (Step 3).
+4. Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra). 
+5. The latent RI-CLPM (Step 4).
 
 ### Step 1
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables), with random intercepts for each indicator separately.
 
-```{r mi_ri-clpm_step_1.inp, results = F}
+```{r mi_ri-clpm_step_1.inp, results = F, warning = F}
 RICLPM1.ext3 <- '
   
   ################
@@ -546,7 +546,7 @@ summary(RICLPM1.ext3.fit, standardized = T)
 ### Step 2
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.
 
-```{r MI_RI-CLPM_step_2.inp, results = F}
+```{r MI_RI-CLPM_step_2.inp, results = F, warning = F}
 RICLPM2.ext3 <- '
   
   ################
@@ -613,7 +613,7 @@ summary(RICLPM2.ext3.fit, standardized = T)
 ### Step 3
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.
 
-```{r MI_RI-CLPM_step_3.inp, results = F}
+```{r MI_RI-CLPM_step_3.inp, results = F, warning = F}
 RICLPM3.ext3 <- '
   ################
   # BETWEEN PART #
@@ -693,7 +693,7 @@ summary(RICLPM3.ext3.fit, standardized = T)
 ### Extra
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.
 
-```{r MI_RI-CLPM_step_4.inp, results = F}
+```{r MI_RI-CLPM_step_4.inp, results = F, warning = F}
 RICLPM4.ext3 <- '
   ################
   # BETWEEN PART #
@@ -798,7 +798,7 @@ summary(RICLPM4.ext3.fit, standardized = T)
 ### Step 4
 Multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with the RI-CLPM at the latent level. 
 
-```{r MI_RI-CLPM_step_5.inp, results = F, warning=F}
+```{r MI_RI-CLPM_step_5.inp, results = F, warning = F}
 RICLPM5.ext3 <- '
   #####################
   # MEASUREMENT MODEL #

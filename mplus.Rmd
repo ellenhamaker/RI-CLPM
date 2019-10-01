@@ -364,11 +364,6 @@ Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagge
                 ! of free latent means in the second group
                 [wx1-wy4@0];
                 [RIx@0 RIy@0];
-    
-                ! Constrain lagged parameters to be identical across groups
-                wx2 wy2 ON wx1 wy1 (a1 b1 c1 d1);
-                wx3 wy3 ON wx2 wy2 (a2 b2 c2 d2);
-                wx4 wy4 ON wx3 wy3 (a3 b3 c3 d3);
              
     OUTPUT:	    TECH1;
 

@@ -11,7 +11,7 @@
 
 
 
-<title>RI-CLPM (and Extensions) using Lavaan (R)</title>
+<title>RI-CLPM (and Extensions) using Lavaan</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -420,26 +420,23 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">RI-CLPM (and Extensions) using Lavaan (R)</h1>
+<h1 class="title toc-ignore">RI-CLPM (and Extensions) using Lavaan</h1>
 
 </div>
 
 
+<hr />
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <p>Below you can find the code for installing and loading the required packages <code>Lavaan</code> <span class="citation">(Rosseel 2012)</span> and <code>Tidyverse</code> <span class="citation">(Wickham 2017)</span>, as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the <code>file.choose()</code>-function.</p>
 <pre class="r"><code># If necessary, install the &#39;Lavaan&#39; and &#39;Tidyverse&#39; packages. 
 # install.packages(&#39;lavaan&#39;, dependencies = T)
-# install.packages(&#39;tidyverse&#39;, dependencies = T)
 
 # Load the required packages. 
 require(lavaan) 
-require(tidyverse)
 
 # Load in the data. 
 ## Traditional RI-CLPM
-## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPM/RICLPM.dat&quot;
-## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat&quot;
 dat &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/RICLPM.dat&quot;,
                   col.names = c(&quot;x1&quot;, &quot;y1&quot;,
                                 &quot;x2&quot;, &quot;y2&quot;, 
@@ -448,8 +445,6 @@ dat &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPM/R
 head(dat)
 
 # Extension 1
-## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/RI-CLPMZ/RICLPMZ.dat&quot;
-## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat&quot;
 datZ &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ/RICLPMZ.dat&quot;,
                    col.names = c(&quot;x1&quot;, &quot;x2&quot;, &quot;x3&quot;, &quot;x4&quot;,
                                 &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;, &quot;y4&quot;, 
@@ -457,8 +452,6 @@ datZ &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/RI-CLPMZ
 head(datZ)
 
 ## Extension 2
-## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MG RI-CLPM/MGRICLPM.dat&quot;
-## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat&quot;
 datMG &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-CLPM/MGRICLPM.dat&quot;,
                     col.names = c(&quot;x1&quot;, &quot;x2&quot;, &quot;x3&quot;, &quot;x4&quot;,
                                 &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;, &quot;y4&quot;, 
@@ -466,8 +459,6 @@ datMG &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MG RI-C
 head(datMG)
 
 # Extension 3
-## &quot;/Users/jeroenmulder/SURFdrive/Research/TeacherCorner2019/MI RI-CLPM/MIRICLPM.dat&quot;
-## &quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat&quot;
 datMI &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-CLPM/MIRICLPM.dat&quot;,
                    col.names = c(&quot;x11&quot;, &quot;x12&quot;, &quot;x13&quot;,
                                 &quot;x21&quot;, &quot;x22&quot;, &quot;x23&quot;,
@@ -616,8 +607,8 @@ summary(RICLPM3.fit, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-1-time-invariant-predictor-z_1" class="section level2 tabset">
-<h2>Extension 1: time-invariant predictor <span class="math inline">\(z_{1}\)</span></h2>
+<div id="extension-1-time-invariant-predictor" class="section level2 tabset">
+<h2>Extension 1: time-invariant predictor</h2>
 <p>Use the tabs below to navigate to the model specification of the RI-CLPM with either <span class="math inline">\(z_{1}\)</span> as a predictor of the observed variables, or with <span class="math inline">\(z_{1}\)</span> as a predictor of the random intercepts.</p>
 <div id="z_1-as-predictor-of-observed-variables" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> as predictor of observed variables</h3>
@@ -874,11 +865,11 @@ summary(RICLPM2.ext2.fit)</code></pre>
 <h2>Extension 3: multiple indicator</h2>
 <p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with</p>
 <ol style="list-style-type: decimal">
-<li>random intercepts for each indicator separately.</li>
-<li>constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.</li>
-<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.</li>
-<li>constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.</li>
-<li>constraints to ensure strong factorial invariance and the RI-CLPM at the latent level.</li>
+<li>Initial model (Step 1).</li>
+<li>Weak factorial invariance (Step 2).</li>
+<li>Strong factorial invariance (Step 3).</li>
+<li>Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra).</li>
+<li>The latent RI-CLPM (Step 4).</li>
 </ol>
 <div id="step-1" class="section level3">
 <h3>Step 1</h3>
@@ -940,11 +931,9 @@ summary(RICLPM2.ext2.fit)</code></pre>
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
 
 &#39;
-RICLPM1.ext3.fit &lt;- cfa(RICLPM1.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
-<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
-##                 is not positive definite;
-##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
-<pre class="r"><code>summary(RICLPM1.ext3.fit, standardized = T)</code></pre>
+RICLPM1.ext3.fit &lt;- cfa(RICLPM1.ext3, data = datMI, missing = &#39;ML&#39;)
+
+summary(RICLPM1.ext3.fit, standardized = T)</code></pre>
 </div>
 <div id="step-2" class="section level3">
 <h3>Step 2</h3>
@@ -1007,11 +996,9 @@ RICLPM1.ext3.fit &lt;- cfa(RICLPM1.ext3, data = datMI, missing = &#39;ML&#39;)</
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
 
 &#39;
-RICLPM2.ext3.fit &lt;- cfa(RICLPM2.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
-<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
-##                 is not positive definite;
-##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
-<pre class="r"><code>summary(RICLPM2.ext3.fit, standardized = T)</code></pre>
+RICLPM2.ext3.fit &lt;- cfa(RICLPM2.ext3, data = datMI, missing = &#39;ML&#39;)
+
+summary(RICLPM2.ext3.fit, standardized = T)</code></pre>
 </div>
 <div id="step-3" class="section level3">
 <h3>Step 3</h3>
@@ -1087,11 +1074,9 @@ RICLPM2.ext3.fit &lt;- cfa(RICLPM2.ext3, data = datMI, missing = &#39;ML&#39;)</
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
 
 &#39;
-RICLPM3.ext3.fit &lt;- cfa(RICLPM3.ext3, data = datMI, missing = &#39;ML&#39;)</code></pre>
-<pre><code>## Warning in lav_object_post_check(object): lavaan WARNING: covariance matrix of latent variables
-##                 is not positive definite;
-##                 use lavInspect(fit, &quot;cov.lv&quot;) to investigate.</code></pre>
-<pre class="r"><code>summary(RICLPM3.ext3.fit, standardized = T)</code></pre>
+RICLPM3.ext3.fit &lt;- cfa(RICLPM3.ext3, data = datMI, missing = &#39;ML&#39;)
+
+summary(RICLPM3.ext3.fit, standardized = T)</code></pre>
 </div>
 <div id="extra" class="section level3">
 <h3>Extra</h3>
