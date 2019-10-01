@@ -11,10 +11,10 @@ bibliography: references.bib
 ---
 
 ## Setup
-Below you can find the code for installing and loading the required packages `Lavaan` [@lavaan] and `Tidyverse` [@tidyverse], as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the `file.choose()`-function. 
+Below you can find the code for installing and loading the required package `Lavaan` [@lavaan], as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the `file.choose()`-function. 
 
 ```{r setup, results = F, message = F}
-# If necessary, install the 'Lavaan' and 'Tidyverse' packages. 
+# If necessary, install the 'Lavaan' package. 
 # install.packages('lavaan', dependencies = T)
 
 # Load the required packages. 
