@@ -60,7 +60,7 @@ head(datMI)
 
 ---
 
-## The RI-CLPM {.tabset}
+## The RI-CLPM {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. 
 
@@ -125,9 +125,13 @@ summary(RICLPM.fit, standardized = T)
 ```
 
 ### Constraints over time
-Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time. 
+Below we specify a RI-CLPM with: 
 
-Please note that fixing parameters in Lavaan is done by something called **premultiplication**. It means that we have to add (1) the number that we want to fix the parameter to and (2) an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. 
+1) fixed auto-regressive and cross-lagged relations over time, 
+2) time-invariant (residual) (co-)variances in the within-person part, and 
+3) constrained grand means over time. 
+
+Please note that fixing parameters in Lavaan is done through **premultiplication**. It means that we have to add the number that we want to fix the parameter to and an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. 
 
 ```{r RICLPM3.inp, results = F}
 RICLPM3 <- '
@@ -201,7 +205,7 @@ summary(RICLPM3.fit, standardized = T)
 
 ---
 
-## Extension 1: time-invariant predictor {.tabset}
+## Extension 1: time-invariant predictor {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts.  
 
@@ -334,7 +338,7 @@ summary(RICLPM1.ext1.fit, standardized = T)
 
 ---
 
-## Extension 2: multiple group {.tabset}
+## Extension 2: multiple group {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. 
 
@@ -467,7 +471,7 @@ summary(RICLPM2.ext2.fit)
 
 ---
 
-## Extension 3: multiple indicator {.tabset}
+## Extension 3: multiple indicator {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
 
