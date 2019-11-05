@@ -9,6 +9,10 @@ navbar:
       href: mplus.html
     - text: "Lavaan (R)"
       href: lavaan.html
+output:
+  html_document:
+    theme: flatly
+    highlight: default
     
 
  

@@ -15,7 +15,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -107,33 +107,33 @@ summary {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 60px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .dropdown-submenu {
   position: relative;
@@ -428,8 +428,8 @@ div.tocify {
 <hr />
 <div id="setup" class="section level2">
 <h2>Setup</h2>
-<p>Below you can find the code for installing and loading the required packages <code>Lavaan</code> <span class="citation">(Rosseel 2012)</span> and <code>Tidyverse</code> <span class="citation">(Wickham 2017)</span>, as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the <code>file.choose()</code>-function.</p>
-<pre class="r"><code># If necessary, install the &#39;Lavaan&#39; and &#39;Tidyverse&#39; packages. 
+<p>Below you can find the code for installing and loading the required package <code>Lavaan</code> <span class="citation">(Rosseel 2012)</span>, as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the <code>file.choose()</code>-function.</p>
+<pre class="r"><code># If necessary, install the &#39;Lavaan&#39; package. 
 # install.packages(&#39;lavaan&#39;, dependencies = T)
 
 # Load the required packages. 
@@ -472,7 +472,7 @@ datMI &lt;- read.table(&quot;C:/Users/5879167/surfdrive/Research/RI-CLPM/MI RI-C
 head(datMI)</code></pre>
 <hr />
 </div>
-<div id="the-ri-clpm" class="section level2 tabset">
+<div id="the-ri-clpm" class="section level2 tabset tabset-fade">
 <h2>The RI-CLPM</h2>
 <p>Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time.</p>
 <div id="the-basic-model" class="section level3">
@@ -535,8 +535,13 @@ summary(RICLPM.fit, standardized = T)</code></pre>
 </div>
 <div id="constraints-over-time" class="section level3">
 <h3>Constraints over time</h3>
-<p>Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time.</p>
-<p>Please note that fixing parameters in Lavaan is done by something called <strong>premultiplication</strong>. It means that we have to add (1) the number that we want to fix the parameter to and (2) an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item <code>x1</code> to factor <code>F</code> to 0, we need to add <code>0*</code> to <code>F =~ x1</code>, resulting in <code>F =~ 0*x1</code>.</p>
+<p>Below we specify a RI-CLPM with:</p>
+<ol style="list-style-type: decimal">
+<li>fixed auto-regressive and cross-lagged relations over time,</li>
+<li>time-invariant (residual) (co-)variances in the within-person part, and</li>
+<li>constrained grand means over time.</li>
+</ol>
+<p>Please note that fixing parameters in Lavaan is done through <strong>premultiplication</strong>. It means that we have to add the number that we want to fix the parameter to and an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item <code>x1</code> to factor <code>F</code> to 0, we need to add <code>0*</code> to <code>F =~ x1</code>, resulting in <code>F =~ 0*x1</code>.</p>
 <pre class="r"><code>RICLPM3 &lt;- &#39;
   # Create two individual factors (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4
@@ -607,7 +612,7 @@ summary(RICLPM3.fit, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-1-time-invariant-predictor" class="section level2 tabset">
+<div id="extension-1-time-invariant-predictor" class="section level2 tabset tabset-fade">
 <h2>Extension 1: time-invariant predictor</h2>
 <p>Use the tabs below to navigate to the model specification of the RI-CLPM with either <span class="math inline">\(z_{1}\)</span> as a predictor of the observed variables, or with <span class="math inline">\(z_{1}\)</span> as a predictor of the random intercepts.</p>
 <div id="z_1-as-predictor-of-observed-variables" class="section level3">
@@ -736,7 +741,7 @@ summary(RICLPM1.ext1.fit, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-2-multiple-group" class="section level2 tabset">
+<div id="extension-2-multiple-group" class="section level2 tabset tabset-fade">
 <h2>Extension 2: multiple group</h2>
 <p>Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters.</p>
 <div id="the-basic-model-1" class="section level3">
@@ -861,7 +866,7 @@ summary(RICLPM2.ext2.fit)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-3-multiple-indicator" class="section level2 tabset">
+<div id="extension-3-multiple-indicator" class="section level2 tabset tabset-fade">
 <h2>Extension 3: multiple indicator</h2>
 <p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with</p>
 <ol style="list-style-type: decimal">
@@ -1284,9 +1289,6 @@ summary(RICLPM5.ext3.fit, standardized = T)</code></pre>
 <div id="refs" class="references">
 <div id="ref-lavaan">
 <p>Rosseel, Yves. 2012. “lavaan: An R Package for Structural Equation Modeling.” <em>Journal of Statistical Software</em> 48 (2): 1–36. <a href="http://www.jstatsoft.org/v48/i02/">http://www.jstatsoft.org/v48/i02/</a>.</p>
-</div>
-<div id="ref-tidyverse">
-<p>Wickham, Hadley. 2017. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>. <a href="https://CRAN.R-project.org/package=tidyverse">https://CRAN.R-project.org/package=tidyverse</a>.</p>
 </div>
 </div>
 </div>

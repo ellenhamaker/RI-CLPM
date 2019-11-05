@@ -1,6 +1,6 @@
 ---
 title: "The RI-CLPM & Extensions"
-author: "Prof. dr. [Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) and [Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) MSc - Utrecht University, the Netherlands"
+author: "[Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) and [Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) - Utrecht University, the Netherlands"
 ---
 
 ----
@@ -22,4 +22,4 @@ The extensions that are discussed in this project are:
 ----
 
 ### Contact
-Questions can be addressed to the second author of the corresponding article, [Jeroen Mulder MSc](mailto:j.d.mulder@uu.nl). 
+Questions can be addressed to the second author of the corresponding article, [Jeroen Mulder](mailto:j.d.mulder@uu.nl). 

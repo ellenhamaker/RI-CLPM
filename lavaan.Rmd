@@ -1,5 +1,5 @@
 ---
-title: "RI-CLPM (and Extensions) using Lavaan"
+title: "RI-CLPM & Extensions using Lavaan"
 output: 
   html_document:
     toc:  true
@@ -60,7 +60,7 @@ head(datMI)
 
 ---
 
-## The RI-CLPM {.tabset}
+## The RI-CLPM {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. 
 
@@ -124,10 +124,16 @@ RICLPM.fit <- lavaan(RICLPM, data = dat, missing = 'ML',
 summary(RICLPM.fit, standardized = T)
 ```
 
-### Constraints over time
-Below we specify a RI-CLPM with: 1) fixed auto-regressive and cross-lagged relations over time, 2) time-invariant (residual) (co-)variances in the within-person part, and 3) constrained grand means over time. 
+---
 
-Please note that fixing parameters in Lavaan is done by something called **premultiplication**. It means that we have to add (1) the number that we want to fix the parameter to and (2) an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. 
+### Constraints over time
+Below we specify a RI-CLPM with: 
+
+1) fixed auto-regressive and cross-lagged relations over time, 
+2) time-invariant (residual) (co-)variances in the within-person part, and 
+3) constrained grand means over time. 
+
+Please note that fixing parameters in Lavaan is done through **premultiplication**. It means that we have to add the number that we want to fix the parameter to and an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. 
 
 ```{r RICLPM3.inp, results = F}
 RICLPM3 <- '
@@ -201,7 +207,7 @@ summary(RICLPM3.fit, standardized = T)
 
 ---
 
-## Extension 1: time-invariant predictor {.tabset}
+## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts.  
 
@@ -270,6 +276,8 @@ RICLPM.ext1.fit <- lavaan(RICLPM.ext1, data = datZ, missing = 'ML',
 summary(RICLPM.ext1.fit, standardized = T)
 ```
 
+---
+
 ### $z_{1}$ as predictor of random intercepts
 Below you can find the code for the RI-CLPM with 4 waves and the random intercepts regressed on predictor $z_{1}$. 
 ```{r RI-CLPM_RI_on_z1.inp, results = F}
@@ -334,7 +342,7 @@ summary(RICLPM1.ext1.fit, standardized = T)
 
 ---
 
-## Extension 2: multiple group {.tabset}
+## Ext. 2: multiple group {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. 
 
@@ -398,6 +406,8 @@ RICLPM1.ext2.fit <- lavaan(RICLPM1.ext2, data = datMG, missing = 'ML',
 summary(RICLPM1.ext2.fit)
 
 ```
+
+---
 
 ### Constrained lagged-parameters
 Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagged-parameters are constrained to be equal over time.
@@ -464,10 +474,9 @@ summary(RICLPM2.ext2.fit)
 
 ```
 
-
 ---
 
-## Extension 3: multiple indicator {.tabset}
+## Ext. 3: multiple indicator {.tabset .tabset-fade}
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
 
@@ -543,6 +552,8 @@ RICLPM1.ext3.fit <- cfa(RICLPM1.ext3, data = datMI, missing = 'ML')
 summary(RICLPM1.ext3.fit, standardized = T)
 ```
 
+---
+
 ### Step 2
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure weak factorial invariance, and with a random intercept for each indicator separately.
 
@@ -609,6 +620,8 @@ RICLPM2.ext3.fit <- cfa(RICLPM2.ext3, data = datMI, missing = 'ML')
 
 summary(RICLPM2.ext3.fit, standardized = T)
 ```
+
+---
 
 ### Step 3
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.
@@ -689,6 +702,8 @@ RICLPM3.ext3.fit <- cfa(RICLPM3.ext3, data = datMI, missing = 'ML')
 
 summary(RICLPM3.ext3.fit, standardized = T)
 ```
+
+---
 
 ### Extra
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately, for which a factor model is specified, with factor loadings equal to the within-person factor loadings.
@@ -794,6 +809,8 @@ RICLPM4.ext3.fit <- cfa(RICLPM4.ext3, data = datMI, missing = 'ML')
 
 summary(RICLPM4.ext3.fit, standardized = T)
 ```
+
+---
 
 ### Step 4
 Multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with the RI-CLPM at the latent level. 
