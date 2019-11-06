@@ -11,7 +11,7 @@
 
 
 
-<title>RI-CLPM (and Extensions) using Lavaan</title>
+<title>RI-CLPM &amp; Extensions using Lavaan</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -420,7 +420,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">RI-CLPM (and Extensions) using Lavaan</h1>
+<h1 class="title toc-ignore">RI-CLPM &amp; Extensions using Lavaan</h1>
 
 </div>
 
@@ -532,6 +532,7 @@ RICLPM.fit &lt;- lavaan(RICLPM, data = dat, missing = &#39;ML&#39;,
                      meanstructure = T, int.ov.free = T) 
 
 summary(RICLPM.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="constraints-over-time" class="section level3">
 <h3>Constraints over time</h3>
@@ -612,8 +613,8 @@ summary(RICLPM3.fit, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-1-time-invariant-predictor" class="section level2 tabset tabset-fade">
-<h2>Extension 1: time-invariant predictor</h2>
+<div id="ext.-1-time-invariant-predictor" class="section level2 tabset tabset-fade">
+<h2>Ext. 1: time-invariant predictor</h2>
 <p>Use the tabs below to navigate to the model specification of the RI-CLPM with either <span class="math inline">\(z_{1}\)</span> as a predictor of the observed variables, or with <span class="math inline">\(z_{1}\)</span> as a predictor of the random intercepts.</p>
 <div id="z_1-as-predictor-of-observed-variables" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> as predictor of observed variables</h3>
@@ -677,6 +678,7 @@ RICLPM.ext1.fit &lt;- lavaan(RICLPM.ext1, data = datZ, missing = &#39;ML&#39;,
                           meanstructure = T, int.ov.free = T) 
 
 summary(RICLPM.ext1.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="z_1-as-predictor-of-random-intercepts" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> as predictor of random intercepts</h3>
@@ -741,8 +743,8 @@ summary(RICLPM1.ext1.fit, standardized = T)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-2-multiple-group" class="section level2 tabset tabset-fade">
-<h2>Extension 2: multiple group</h2>
+<div id="ext.-2-multiple-group" class="section level2 tabset tabset-fade">
+<h2>Ext. 2: multiple group</h2>
 <p>Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters.</p>
 <div id="the-basic-model-1" class="section level3">
 <h3>The basic model</h3>
@@ -801,6 +803,7 @@ RICLPM1.ext2.fit &lt;- lavaan(RICLPM1.ext2, data = datMG, missing = &#39;ML&#39;
                            group = &quot;G&quot;, 
                            meanstructure = T, int.ov.free = T)
 summary(RICLPM1.ext2.fit)</code></pre>
+<hr />
 </div>
 <div id="constrained-lagged-parameters" class="section level3">
 <h3>Constrained lagged-parameters</h3>
@@ -866,8 +869,8 @@ summary(RICLPM2.ext2.fit)</code></pre>
 <hr />
 </div>
 </div>
-<div id="extension-3-multiple-indicator" class="section level2 tabset tabset-fade">
-<h2>Extension 3: multiple indicator</h2>
+<div id="ext.-3-multiple-indicator" class="section level2 tabset tabset-fade">
+<h2>Ext. 3: multiple indicator</h2>
 <p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with</p>
 <ol style="list-style-type: decimal">
 <li>Initial model (Step 1).</li>
@@ -939,6 +942,7 @@ summary(RICLPM2.ext2.fit)</code></pre>
 RICLPM1.ext3.fit &lt;- cfa(RICLPM1.ext3, data = datMI, missing = &#39;ML&#39;)
 
 summary(RICLPM1.ext3.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="step-2" class="section level3">
 <h3>Step 2</h3>
@@ -1004,6 +1008,7 @@ summary(RICLPM1.ext3.fit, standardized = T)</code></pre>
 RICLPM2.ext3.fit &lt;- cfa(RICLPM2.ext3, data = datMI, missing = &#39;ML&#39;)
 
 summary(RICLPM2.ext3.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="step-3" class="section level3">
 <h3>Step 3</h3>
@@ -1082,6 +1087,7 @@ summary(RICLPM2.ext3.fit, standardized = T)</code></pre>
 RICLPM3.ext3.fit &lt;- cfa(RICLPM3.ext3, data = datMI, missing = &#39;ML&#39;)
 
 summary(RICLPM3.ext3.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="extra" class="section level3">
 <h3>Extra</h3>
@@ -1185,6 +1191,7 @@ summary(RICLPM3.ext3.fit, standardized = T)</code></pre>
 RICLPM4.ext3.fit &lt;- cfa(RICLPM4.ext3, data = datMI, missing = &#39;ML&#39;)
 
 summary(RICLPM4.ext3.fit, standardized = T)</code></pre>
+<hr />
 </div>
 <div id="step-4" class="section level3">
 <h3>Step 4</h3>
