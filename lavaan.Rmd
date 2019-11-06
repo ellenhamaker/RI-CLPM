@@ -207,7 +207,11 @@ summary(RICLPM3.fit, standardized = T)
 
 ---
 
+<<<<<<< HEAD
 ## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
+=======
+## Extension 1: time-invariant predictor {.tabset .tabset-fade}
+>>>>>>> 52981eee49f98237b6f9e19c75de9a688adb59c9
 
 Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts.  
 
@@ -342,7 +346,11 @@ summary(RICLPM1.ext1.fit, standardized = T)
 
 ---
 
+<<<<<<< HEAD
 ## Ext. 2: multiple group {.tabset .tabset-fade}
+=======
+## Extension 2: multiple group {.tabset .tabset-fade}
+>>>>>>> 52981eee49f98237b6f9e19c75de9a688adb59c9
 
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. 
 
@@ -476,7 +484,11 @@ summary(RICLPM2.ext2.fit)
 
 ---
 
+<<<<<<< HEAD
 ## Ext. 3: multiple indicator {.tabset .tabset-fade}
+=======
+## Extension 3: multiple indicator {.tabset .tabset-fade}
+>>>>>>> 52981eee49f98237b6f9e19c75de9a688adb59c9
 
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM with 4 waves and 3 indicators for each variable at each wave. The five steps correspond to models with
 
