@@ -20,7 +20,7 @@ The extensions that are discussed in this project are:
 2. Doing multiple group analysis. 
 3. Using multiple indictors for variables. 
 
-You can find the simulated example datasets on [Github](/data).
+You can find the simulated example datasets on [Github](/RICLPM/data).
 
 ----
 

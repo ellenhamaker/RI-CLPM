@@ -16,7 +16,7 @@ For Mplus [@Mplus8] to work properly, please make sure that you save the input f
 
 ## The RI-CLPM {.tabset .tabset-fade}
 
-Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. You can download the simulated example dataset *RICLPM.dat* [here](/data/RICLPM.dat). 
+Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. You can download the simulated example dataset *RICLPM.dat* [here](/RICLPM/data/RICLPM.dat). 
 
 ### The basic model
 The code for specifying the basic RI-CLPM is given below. 
@@ -130,7 +130,7 @@ Below we specify a RI-CLPM with:
 
 
 ## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
-Use the tabs below to navigate to the model specification of the RI-CLPM with either a predictor $z_{1}$ of the observed variables, or with a predictor $z_{1}$ of the random intercepts. You can download the simulated example dataset *RICLPMZ.dat* [here](/data/RICLPMZ.dat). 
+Use the tabs below to navigate to the model specification of the RI-CLPM with either a predictor $z_{1}$ of the observed variables, or with a predictor $z_{1}$ of the random intercepts. You can download the simulated example dataset *RICLPMZ.dat* [here](/RICLPM/data/RICLPMZ.dat). 
 
 ### $z_{1}$ as predictor of observed variables
 Below you can find the code for the RI-CLPM with 4 waves and a between-level predictor for the observed variables (restricted version). 
@@ -242,7 +242,7 @@ Below you can find the code for the RI-CLPM with 4 waves and the random intercep
 ---
 
 ## Ext. 2: multiple group {.tabset .tabset-fade}
-Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). You can download the simulated example dataset *MGRICLPM.dat* [here](/data/MGRICLPM.dat).
+Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). You can download the simulated example dataset *MGRICLPM.dat* [here](/RICLPM/data/MGRICLPM.dat).
 
 ### The basic model
 
@@ -380,7 +380,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
 - Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra). 
 - The latent RI-CLPM (Step 4).
 
-You can download the simulated example dataset *MIRICLPM.dat* [here](/data/MIRICLPM.dat).
+You can download the simulated example dataset *MIRICLPM.dat* [here](/RICLPM/data/MIRICLPM.dat).
 
 ### Step 1
 

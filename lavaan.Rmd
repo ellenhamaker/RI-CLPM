@@ -62,7 +62,7 @@ head(datMI)
 
 ## The RI-CLPM {.tabset .tabset-fade}
 
-Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. You can download the simulated example dataset *RICLPM.dat* [here](/data/RICLPM.dat). 
+Use the tabs below to navigate to the model specification of either the basic model, or the RI-CLPM with constraints over time. You can download the simulated example dataset *RICLPM.dat* [here](/RICLPM/data/RICLPM.dat). 
 
 ### The basic model
 The code for specifying the basic RI-CLPM is given below. 
@@ -208,7 +208,7 @@ summary(RICLPM3.fit, standardized = T)
 ---
 
 ## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
-Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts. You can download the simulated example dataset *RICLPMZ.dat* [here](/data/RICLPMZ.dat).
+Use the tabs below to navigate to the model specification of the RI-CLPM with either $z_{1}$ as a predictor of the observed variables, or with $z_{1}$ as a predictor of the random intercepts. You can download the simulated example dataset *RICLPMZ.dat* [here](/RICLPM/data/RICLPMZ.dat).
 
 ### $z_{1}$ as predictor of observed variables
 Below you can find the code for the RI-CLPM with 4 waves and a between-level predictor for the observed variables. 
@@ -342,7 +342,7 @@ summary(RICLPM1.ext1.fit, standardized = T)
 ---
 
 ## Ext. 2: multiple group {.tabset .tabset-fade}
-Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. You can download the simulated example dataset *MGRICLPM.dat* [here](/data/MGRICLPM.dat).
+Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters. You can download the simulated example dataset *MGRICLPM.dat* [here](/RICLPM/data/MGRICLPM.dat).
 
 ### The basic model
 Below you can find the code for a multiple group RI-CLPM with 4 waves.
@@ -483,7 +483,7 @@ Use the tabs below to navigate to the model specification of a multiple indicato
 4. Strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra). 
 5. The latent RI-CLPM (Step 4).
 
-You can download the simulated example dataset *MIRICLPM.dat* [here](/data/MIRICLPM.dat).
+You can download the simulated example dataset *MIRICLPM.dat* [here](/RICLPM/data/MIRICLPM.dat).
 
 ### Step 1
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables), with random intercepts for each indicator separately.
