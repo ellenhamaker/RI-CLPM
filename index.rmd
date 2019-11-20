@@ -1,6 +1,7 @@
 ---
 title: "The RI-CLPM & Extensions"
-author: "[Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) and [Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) - Utrecht University, the Netherlands"
+author: '[Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) and [Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder)
+  - Utrecht University, the Netherlands'
 ---
 
 ----
@@ -12,12 +13,14 @@ This website serves as supplementary material to the paper "*Three extensions of
 
 ----
 
-### Extensions
+### Extensions and Data
 The extensions that are discussed in this project are:
 
 1. Including a time-invariant predictor. 
 2. Doing multiple group analysis. 
 3. Using multiple indictors for variables. 
+
+You can find the simulated example datasets on [Github](/data).
 
 ----
 
