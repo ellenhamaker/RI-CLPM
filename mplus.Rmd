@@ -26,65 +26,63 @@ These defaults are included in Mplus to make the specification of many standard 
 To specify the RI-CLPM we need four parts.
 
 * A *between* part, consisting of the random intercepts. It is specified using the `BY` command, `RIx BY x1@1 x2@1 ...;`, where `@1` fixes the factor loading to one.
-* A *within* part, consisting of within-unit fluctuations. It is also specified using the `BY` command,`wx1 BY x1; wx2 BY x2; ...`. We do not have to constrain the factor loading to 1, as this is already the default in Mplus for the factor loading of the first indicator of a latent variable. However, we do need to constrain the measurement error variances to zero, as Mplus will include them by default when we use the `BY` statement. We do this by including `x1@0 x2@0 x3@0 x4@0 x5@0;` where `@0` fixes the measurement error variances to zero, which is the same as saying there is no measurement error.
+* A *within* part, consisting of within-unit fluctuations. It is also specified using the `BY` command, `wx1 BY x1; wx2 BY x2; ...`. We do not have to constrain the factor loading to 1, as this is already the default in Mplus for the factor loading of the first indicator of a latent variable. However, we do need to constrain the measurement error variances to zero, as Mplus will include them by default when we use the `BY` statement. We do this by including `x1@0 x2@0 x3@0 x4@0 x5@0;` where `@0` fixes the measurement error variances to zero, which is the same as saying there is no measurement error.
 * The *lagged regressions* between the within-unit components, using `wx2 ON wx1 wy1; wx3 ON wx2 wy2; ...`.
 * Relevant *covariances* in both the between and within part. In the within part the components at wave 1, and their residuals at waves 2 and further are correlated within each wave, using `wx1 WITH wy1; wx2 WITH wy2;...`. For the between part we have to specify that the random intercepts are correlated using `RIx WITH RIy;`.
 
 ### The basic model
 The syntax for specifying the basic RI-CLPM is given below.
 
-
-    TITLE:      The basic RI-CLPM, 5 waves. 
-    
-    DATA:       FILE = RICLPM.dat;  
-                
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5;
-    
+    TITLE:	    The basic RI-CLPM, 5 waves. 
+       
+    DATA:       FILE = RICLPM.dat;
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5;
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
-    
+        
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
                 wx2 BY x2@1;
                 wx3 BY x3@1; 
                 wx4 BY x4@1; 
                 wx5 BY x5@1;
-            
+                
                 wy1 BY y1@1; 
                 wy2 BY y2@1;
                 wy3 BY y3@1; 
                 wy4 BY y4@1; 
                 wy5 BY y5@1;
-    
+        
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
-    
+        
                 ! Estimate the lagged effects between 
                 ! the within-person centered variables
                 wx2 wy2 ON wx1 wy1;
                 wx3 wy3 ON wx2 wy2;
                 wx4 wy4 ON wx3 wy3;
                 wx5 wy5 ON wx4 wy4;
-    
+        
                 ! Estimate the covariance between the random intercepts
                 RIx WITH RIy;
-    
+        
                 ! Estimate the covariance between the within-person
                 ! components at the first wave
-                 wx1 WITH wy1;
-                
+                wx1 WITH wy1;
+                    
                 ! Estimate the covariances between the residuals of
                 ! the within-person components (the innovations)
                 wx2 WITH wy2;
                 wx3 WITH wy3; 
                 wx4 WITH wy4;
                 wx5 WITH wy5; 
-                
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
-
+                    
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 ---
 
 ### Constraints over time
@@ -96,61 +94,70 @@ Imposing constraints to the model can be achieved by giving labels to parameters
 
 ---
 
-    TITLE:	    Fit the RI-CLPM with constraints on the lagged parameters
-                and on the residual variances and covariances and on the
-                grand means over time
-    
-    DATA:       FILE IS RICLPM.dat;  
-                
-    VARIABLE:   NAMES ARE x1 y1 x2 y2 x3 y3 x4 y4;
-    
+    TITLE:	    The basic RI-CLPM, 5 waves. 
+                Constrain the grand means, (residual) variances, and 
+                lagged effects over time.   
+        
+    DATA:       FILE = RICLPM.dat;  
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5;
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:	    ! Create two individual factors (random intercepts)
-                RIx BY x1@1 x2@1 x3@1 x4@1;
-                RIy BY y1@1 y2@1 y3@1 y4@1;
-    
+                RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
+                RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
+        
                 ! Create within-person centered variables
-                wx1 BY x1@1; wx2 BY x2@1;
-                wx3 BY x3@1; wx4 BY x4@1;
-                wy1 BY y1@1; wy2 BY y2@1;
-                wy3 BY y3@1; wy4 BY y4@1;
-    
+                wx1 BY x1@1; 
+                wx2 BY x2@1;
+                wx3 BY x3@1; 
+                wx4 BY x4@1; 
+                wx5 BY x5@1;
+                
+                wy1 BY y1@1; 
+                wy2 BY y2@1;
+                wy3 BY y3@1; 
+                wy4 BY y4@1; 
+                wy5 BY y5@1;
+        
                 ! Constrain the measurement error variances to zero
-                x1-y4@0;
-    
+                x1-y5@0;
+        
                 ! Estimate the lagged effects between 
                 ! the within-person centered variables
                 wx2 wy2 ON wx1 wy1 (a b c d);
                 wx3 wy3 ON wx2 wy2 (a b c d);
                 wx4 wy4 ON wx3 wy3 (a b c d);
-    
+                wx5 wy5 ON wx4 wy4 (a b c d);
+        
+                ! Estimate the covariance between the random intercepts
+                RIx WITH RIy;
+        
                 ! Estimate the covariance between the within-person
                 ! components at the first wave
                 wx1 WITH wy1;
-    
-                ! Estimate the covariance between the random intercepts
-                RIx WITH RIy;
-                
+                    
                 ! Estimate the covariances between the residuals of
                 ! the within-person components (the innovations) and
                 ! constrain these and the residual variances to be 
                 ! invariant over time
                 wx2 WITH wy2 (cov); wx2 (vx); wy2 (vy);
                 wx3 WITH wy3 (cov); wx3 (vx); wy3 (vy);
-                wx4 WITH wy4 (cov); wx4 (vx); wy4 (vy);
+                wx4 WITH wy4 (cov); wx4 (vx); wy4 (vy); 
+                wx5 WITH wy5 (cov); wx5 (vx); wy5 (vy);
     
                 ! Constrain grand means to be invariant over time
-                [x1 x2 x3 x4] (mx);
-                [y1 y2 y3 y4] (my);
-                
-    OUTPUT:	    TECH1 STDYX SAMPSTAT;
+                [x1 x2 x3 x4 x5] (mx);
+                [y1 y2 y3 y4 y5] (my);
+                    
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 
 ---
 
 
-## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
+## Ext. 1: time-invariant variables {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of the RI-CLPM with
 
 * a time-invariant predictor $z_{1}$ of the observed variables,
@@ -161,17 +168,16 @@ Use the tabs below to navigate to the model specification of the RI-CLPM with
 ### $z_{1}$ predicting observed
 Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor $z_{1}$ for the observed variables. The effect of $z_{1}$ on the observed variables is constrained to be the same across waves.
 
-    TITLE:      RI-CLPM, 5 waves, with a time-invariant predictor for the observed variables.
-                The regression coefficients for the effect of z1 on x and y is constrainted 
-                to be the same at each wave.
-                       
+    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
+                the observed variables. 
+       
     DATA:       FILE = RICLPM-Z.dat;
-    
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 z1 z2;
-                USEVARIABLES = x1 x2 x3 x4 x5 y1 y2 y3 y4 y5 z1;
-                
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
+                USEVARIABLES = x1-y5 z1;
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
@@ -195,12 +201,12 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
     
-                ! Regression of observed variables on Z
-                x1 x2 x3 x4 x5 ON z1 (s1);
-                y1 y2 y3 y4 y4 y5 ON z1 (s2);
+                ! Regression of observed variables on z1 (unconstrained)
+                x1-x5 ON z1 (s1);
+                y1-y5 ON z1 (s2);
     
-                ! Estimate the lagged effects between 
-                ! the within-person centered variables
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables
                 wx2 wy2 ON wx1 wy1;
                 wx3 wy3 ON wx2 wy2;
                 wx4 wy4 ON wx3 wy3;
@@ -217,31 +223,29 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
                 wx4 WITH wy4; 
                 wx5 WITH wy5;
     
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 ---
 
 ### $z_{1}$ predicting RI's
 Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor z1 for the random intercepts.
 
-    TITLE:      RI-CLPM, 5 waves, with a time-invariant predictor for the random intercepts
-                       
+    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
+                the random intercepts. 
+       
     DATA:       FILE = RICLPM-Z.dat;
-    
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 z1 z2;
-                USEVARIABLES = x1 x2 x3 x4 x5 y1 y2 y3 y4 y5 z1;
-                
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
+                USEVARIABLES = x1-y5 z1;
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
                 ! Estimate the covariance between the random intercepts
                 RIx WITH RIy;
-    
-                ! Regression of random intercepts on z1
-                RIx RIy ON z1;
     
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
@@ -259,8 +263,11 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
     
-                ! Estimate the lagged effects between 
-                ! the within-person centered variables
+                ! Regression of random intercepts on z1
+                RIx RIy ON z1;
+    
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables
                 wx2 wy2 ON wx1 wy1;
                 wx3 wy3 ON wx2 wy2;
                 wx4 wy4 ON wx3 wy3;
@@ -277,21 +284,23 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
                 wx4 WITH wy4; 
                 wx5 WITH wy5;
     
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 ---
 
 ### observed predicting $z_{2}$
 Below you can find the syntax for a RI-CLPM with 5 waves and the observed variables predicting the time-invariant outcome $z_{2}$. The effect of the observed variables on the outcome $z_{2}$ is constrained to be the same across waves.
 
-    TITLE:      RI-CLPM 5 waves with a between level outcome regressed on observed variables. 
-                       
+    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
+                the observed variables (constrained) and a time-invariant 
+                outcome for the observed variables.  
+       
     DATA:       FILE = RICLPM-Z.dat;
-    
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 z1 z2;
-                
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
@@ -299,11 +308,13 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the observed variab
                 ! Estimate the covariance between the random intercepts
                 RIx WITH RIy;
     
-                ! Regression of random intercepts on z1
-                RIx RIy ON z1;
+                ! Regression of observed variables on z1 (constrained)
+                x1-x5 ON z1 (s1);
+                y1-y5 ON z1 (s2);
     
-                ! Regress future outcome on observed variabels. 
-                z2 ON wx1-wy5;
+                ! Regres future outcome on observed variables. 
+                z2 ON x1-x5 (o1)
+                z2 ON y1-y5 (o2);
     
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
@@ -321,71 +332,12 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the observed variab
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
     
-                ! Estimate the lagged effects between 
-                ! the within-person centered variables
-                wx2 wy2 ON wx1 wy1;
-                wy3 ON wx2 wy2;
-                wx4 wy4 ON wx3 wy3;
-                wx5 wy5 ON wx4 wy4;
+                ! Regression of observed variables on z1 (constrained)
+                x1-x5 ON z1 (s1);
+                y1-y5 ON z1 (s2);
     
-                ! Estimate the covariance between the within-person
-                ! components at the first wave 
-                wx1 WITH wy1;
-               
-                ! Estimate the covariances between the residuals of
-                ! the within-person components (the innovations)
-                wx2 WITH wy2;
-                wx3 WITH wy3; 
-                wx4 WITH wy4; 
-                wx5 WITH wy5;
-    
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
-
-
----
-
-### RIs predicting $z_{2}$
-Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome $z_{2}$.
-
-    TITLE:      RI-CLPM, 5 waves, with a between level outcome regressed on RIs. 
-                       
-    DATA:       FILE = RICLPM-Z.dat;
-    
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 z1 z2;
-                
-    ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
-    MODEL:      ! Create two individual factors (random intercepts)
-                RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
-                RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
-    
-                ! Estimate the covariance between the random intercepts
-                RIx WITH RIy;
-    
-                ! Regression of random intercepts on z1
-                RIx RIy ON z1;
-    
-                ! Regres future outcome on RIs. 
-                z2 ON RIx RIy;
-    
-                ! Create within-person centered variables
-                wx1 BY x1@1; 
-                wx2 BY x2@1;
-                wx3 BY x3@1; 
-                wx4 BY x4@1;
-                wx5 BY x5@1;
-    
-                wy1 BY y1@1; 
-                wy2 BY y2@1;
-                wy3 BY y3@1; 
-                wy4 BY y4@1;
-                wy5 BY y5@1;
-    
-                ! Constrain the measurement error variances to zero
-                x1-y5@0;
-    
-                ! Estimate the lagged effects between 
-                ! the within-person centered variables
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables
                 wx2 wy2 ON wx1 wy1;
                 wx3 wy3 ON wx2 wy2;
                 wx4 wy4 ON wx3 wy3;
@@ -402,15 +354,83 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the random intercep
                 wx4 WITH wy4; 
                 wx5 WITH wy5;
     
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
+---
+
+### RIs predicting $z_{2}$
+Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome $z_{2}$.
+
+    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
+                the observed variables (constrained) and a time-invariant 
+                outcome for the random intercepts.  
+       
+    DATA:       FILE = RICLPM-Z.dat;
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
+        
+    ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
+        
+    MODEL:      ! Create two individual factors (random intercepts)
+                RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
+                RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
+    
+                ! Estimate the covariance between the random intercepts
+                RIx WITH RIy;
+    
+                ! Regression of observed variables on z1 (constrained)
+                x1-x5 ON z1 (s1);
+                y1-y5 ON z1 (s2);
+    
+                ! Regres future outcome on random intercepts. 
+                z2 ON RIx RIy;
+                
+                ! Create within-person centered variables
+                wx1 BY x1@1; 
+                wx2 BY x2@1;
+                wx3 BY x3@1; 
+                wx4 BY x4@1;
+                wx5 BY x5@1;
+    
+                wy1 BY y1@1; 
+                wy2 BY y2@1;
+                wy3 BY y3@1; 
+                wy4 BY y4@1;
+                wy5 BY y5@1;
+    
+                ! Constrain the measurement error variances to zero
+                x1-y5@0;
+    
+                ! Regression of observed variables on z1 (constrained)
+                x1-x5 ON z1 (s1);
+                y1-y5 ON z1 (s2);
+    
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables
+                wx2 wy2 ON wx1 wy1;
+                wx3 wy3 ON wx2 wy2;
+                wx4 wy4 ON wx3 wy3;
+                wx5 wy5 ON wx4 wy4;
+    
+                ! Estimate the covariance between the within-person
+                ! components at the first wave 
+                wx1 WITH wy1;
+               
+                ! Estimate the covariances between the residuals of
+                ! the within-person components (the innovations)
+                wx2 WITH wy2;
+                wx3 WITH wy3; 
+                wx4 WITH wy4; 
+                wx5 WITH wy5;
+    
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 ---
 
 ## Ext. 2: multiple group {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). 
 
-To specify a multiple group RI-CLPM, we need to overrule some of the defaults that Mplus will impose and that are associated with multiple group factor analysis. The reason for this is that when we use the `BY` statement in combination with multiple groups, Mplus will automatically impose the defaults that are associated with strong factorial invariance (Meredith 1993). These defaults are:
+To specify a multiple group RI-CLPM, we need to overrule some of the defaults that Mplus will impose and that are associated with multiple group factor analysis. The reason for this is that when we use the `BY` statement in combination with multiple groups, Mplus will automatically impose the defaults that are associated with strong factorial invariance (@Meredith1993). These defaults are:
 
 * equal factor loadings across the groups,
 * equal intercepts for the observed variables across the groups, and
@@ -422,143 +442,144 @@ In the context of a multiple-group RI-CLPM, the first constraint is not an issue
 
 Below you can find the code for a multiple group RI-CLPM with 5 waves.
 
-    TITLE:      Multiple group RI-CLPM, 5 waves, overruling the Mplus 
-                multiple group factor analysis defaults.
-            
-    DATA:       FILE = RICLPM-MG.dat;
+    TITLE:	    Multiple group RI-CLPM, 5 waves. 
+                Overruling the Mplus multiple group factor analysis defaults.
                 
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 G;
-                GROUPING = G (1=G1 2=G2);
-    
+    DATA:       FILE = RICLPM-MG.dat;
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 GROUP;
+                GROUPING = GROUP (1=G1 2=G2);
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
-    MODEL:      
-                ! Create two individual factors (random intercepts)
+        
+    MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
-    
-                ! Estimate the covariance between the random intercepts
-                RIx WITH RIy;    
-    
+        
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
                 wx2 BY x2@1;
                 wx3 BY x3@1; 
                 wx4 BY x4@1; 
                 wx5 BY x5@1;
-            
+                
                 wy1 BY y1@1; 
                 wy2 BY y2@1;
                 wy3 BY y3@1; 
                 wy4 BY y4@1; 
                 wy5 BY y5@1;
-    
+        
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
-    
-                ! Estimate the lagged effects between the within-person centered variables
+        
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables
                 wx2 wy2 ON wx1 wy1;
                 wx3 wy3 ON wx2 wy2;
                 wx4 wy4 ON wx3 wy3;
                 wx5 wy5 ON wx4 wy4;
-    
-                ! Estimate the covariance between the within-person components at the first wave
+        
+                ! Estimate the covariance between the random intercepts
+                RIx WITH RIy;
+        
+                ! Estimate the covariance between the within-person
+                ! components at the first wave
                 wx1 WITH wy1;
-            
+                    
                 ! Estimate the covariances between the residuals of
                 ! the within-person components (the innovations)
                 wx2 WITH wy2;
                 wx3 WITH wy3; 
-                wx4 WITH wy4; 
-                wx5 WITH wy5;
-    
-    MODEL G2:   
-                ! Overrule the multiple group factor analysis default 
+                wx4 WITH wy4;
+                wx5 WITH wy5; 
+        
+    MODEL G2:   ! Overrule the multiple group factor analysis default 
                 ! of equal intercepts across the groups
                 [x1-y5];
-          
+              
                 ! Overrule the multiple group factor analysis default 
                 ! of free latent means in the second group
                 [wx1-wy5@0];
                 [RIx@0 RIy@0];
-                   
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
+                       
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 ---
 
 ### Constrained lagged-parameters
 Below you can find the code for a multiple group RI-CLPM, 5 waves. The lagged-parameters are constrained to be equal over time.
 
-    TITLE:      Multiple group RI-CLPM, 5 waves, overruling the Mplus 
-                multiple group factor analysis defaults, and with equal 
-                lagged parameters across groups. 
-            
-    DATA:       FILE = RICLPM-MG.dat;
+    TITLE:	    Multiple group RI-CLPM, 5 waves, with equal lagged parameters 
+                across groups. 
+                Overruling the Mplus multiple group factor analysis defaults.
                 
-    VARIABLE:   NAMES = x1 y1 x2 y2 x3 y3 x4 y4 x5 y5 G;
-                GROUPING = G (1=G1 2=G2);
-    
+    DATA:       FILE = RICLPM-MG.dat;
+                    
+    VARIABLE:   NAMES = x1-x5 y1-y5 GROUP;
+                GROUPING = GROUP (1=G1 2=G2);
+        
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
-    
+        
     MODEL:      ! Create two individual factors (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
-    
-                ! Estimate the covariance between the random intercepts
-                RIx WITH RIy;    
-    
+        
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
                 wx2 BY x2@1;
                 wx3 BY x3@1; 
                 wx4 BY x4@1; 
                 wx5 BY x5@1;
-            
+                
                 wy1 BY y1@1; 
                 wy2 BY y2@1;
                 wy3 BY y3@1; 
                 wy4 BY y4@1; 
                 wy5 BY y5@1;
-    
+        
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
-    
-                ! Estimate the lagged effects between the within-person 
-                ! centered variables and constrain them across groups.
+        
+                ! Estimate the lagged effects between  the within-person 
+                ! centered variables (constrained across groups)
                 wx2 wy2 ON wx1 wy1 (a1 b1 c1 d1);
                 wx3 wy3 ON wx2 wy2 (a2 b2 c2 d2);
                 wx4 wy4 ON wx3 wy3 (a3 b3 c3 d3);
                 wx5 wy5 ON wx4 wy4 (a4 b4 c4 d4);
         
-                ! Estimate the covariance between the within-person components at the first wave
+                ! Estimate the covariance between the random intercepts
+                RIx WITH RIy;
+        
+                ! Estimate the covariance between the within-person
+                ! components at the first wave
                 wx1 WITH wy1;
-            
+                    
                 ! Estimate the covariances between the residuals of
                 ! the within-person components (the innovations)
                 wx2 WITH wy2;
                 wx3 WITH wy3; 
-                wx4 WITH wy4; 
-                wx5 WITH wy5;
-    
+                wx4 WITH wy4;
+                wx5 WITH wy5; 
+        
     MODEL G2:   ! Overrule the multiple group factor analysis default 
                 ! of equal intercepts across the groups
                 [x1-y5];
-          
+              
                 ! Overrule the multiple group factor analysis default 
                 ! of free latent means in the second group
                 [wx1-wy5@0];
                 [RIx@0 RIy@0];
-                
-                ! Constrain lagged parameters to be identical across groups
+    
+                ! Estimate the lagged effects between the within-person 
+                ! centered variables (constrained across groups)
                 wx2 wy2 ON wx1 wy1 (a1 b1 c1 d1);
                 wx3 wy3 ON wx2 wy2 (a2 b2 c2 d2);
                 wx4 wy4 ON wx3 wy3 (a3 b3 c3 d3);
                 wx5 wy5 ON wx4 wy4 (a4 b4 c4 d4);
-                   
-    OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;
+                       
+    OUTPUT:	    TECH1 STDYX SAMPSTAT CINTERVAL;
 
 ---
-
 
 ## Ext. 3: multiple indicator {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM, 5 waves and 3 indicators for each variable at each wave. The five steps correspond to:
@@ -612,14 +633,14 @@ At the latent within-unit level, we specify the dynamic model in Mplus using` WF
                 ! Due to having a random intercept per indicator, the measurement model 
                 ! here is only on the within part of the measurements
     
-                ! Factor models for x at 4 waves
+                ! Factor models for x at 5 waves
                 WFX1 BY x11-x13;
                 WFX2 BY x21-x23;
                 WFX3 BY x31-x33;
                 WFX4 BY x41-x43; 
                 WFX5 BY x51-x53;   
                 
-                ! Factor models for y at 4 waves
+                ! Factor models for y at 5 waves
                 WFY1 BY y11-y13;
                 WFY2 BY y21-y23;
                 WFY3 BY y31-y33;
@@ -687,14 +708,14 @@ In second step, we constrain the factor loadings to be invariant over time using
                 ! Due to having a random intercept per indicator, the measurement model 
                 ! here is only on the within part of the measurements
     
-                ! Factor models for x at 4 waves
+                ! Factor models for x at 5 waves
                 WFX1 BY x11-x13 (a b c);
                 WFX2 BY x21-x23 (a b c);
                 WFX3 BY x31-x33 (a b c);
                 WFX4 BY x41-x43 (a b c); 
                 WFX5 BY x51-x53 (a b c);   
             
-                ! Factor models for y at 4 waves
+                ! Factor models for y at 5 waves
                 WFY1 BY y11-y13 (d e f);
                 WFY2 BY y21-y23 (d e f);
                 WFY3 BY y31-y33 (d e f);
@@ -762,14 +783,14 @@ In Mplus, the model for strong factorial invariance can be specified as the prev
                 ! Due to having a random intercept per indicator, the measurement model 
                 ! here is only on the within part of the measurements
     
-                ! Factor models for x at 4 waves
+                ! Factor models for x at 5 waves
                 WFX1 BY x11-x13 (a b c);
                 WFX2 BY x21-x23 (a b c);
                 WFX3 BY x31-x33 (a b c);
                 WFX4 BY x41-x43 (a b c); 
                 WFX5 BY x51-x53 (a b c);   
                 
-                ! Factor models for y at 4 waves
+                ! Factor models for y at 5 waves
                 WFY1 BY y11-y13 (d e f);
                 WFY2 BY y21-y23 (d e f);
                 WFY3 BY y31-y33 (d e f);
@@ -870,14 +891,14 @@ In Mplus, the model for strong factorial invariance can be specified as the prev
                 ! Due to having a random intercept per indicator, the measurement model 
                 ! here is only on the within part of the measurements
     
-                ! Factor models for x at 4 waves
+                ! Factor models for x at 5 waves
                 WFX1 BY x11-x13 (a b c);
                 WFX2 BY x21-x23 (a b c);
                 WFX3 BY x31-x33 (a b c);
                 WFX4 BY x41-x43 (a b c); 
                 WFX5 BY x51-x53 (a b c);   
                 
-                ! Factor models for y at 4 waves
+                ! Factor models for y at 5 waves
                 WFY1 BY y11-y13 (d e f);
                 WFY2 BY y21-y23 (d e f);
                 WFY3 BY y31-y33 (d e f);
@@ -947,7 +968,7 @@ We have to overrule the default of Mplus to include a term for measurement error
                 ! MEASUREMENT MODEL !
                 !!!!!!!!!!!!!!!!!!!!!
         
-                ! Factor models for x at 4 waves constrained factor loadings 
+                ! Factor models for x at 5 waves constrained factor loadings 
                 ! over time.
                 FX1 BY x11-x13 (a b c);
                 FX2 BY x21-x23 (a b c);
@@ -955,7 +976,7 @@ We have to overrule the default of Mplus to include a term for measurement error
                 FX4 BY x41-x43 (a b c); 
                 FX5 BY x51-x53 (a b c);   
                     
-                ! Factor models for y at 4 waves constrained factor loadings 
+                ! Factor models for y at 5 waves constrained factor loadings 
                 ! over time. 
                 FY1 BY y11-y13 (d e f);
                 FY2 BY y21-y23 (d e f);

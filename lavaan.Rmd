@@ -960,7 +960,7 @@ summary(RICLPM2.ext3.fit, standardized = T)
 ### Step 3
 Multiple indicator RI-CLPM 4 waves with 3 indicators for each variable at each wave (24 observed variables). Fitting a model with constraints to ensure strong factorial invariance, with a random intercept for each indicator separately.
 
-```{rRICLPM-MI3, eval = F, warning = F}
+```{r RICLPM-MI3, eval = F, warning = F}
 RICLPM3.ext3 <- '
   
   ################
