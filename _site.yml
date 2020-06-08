@@ -7,7 +7,7 @@ navbar:
       href: index.html
     - text: "Mplus"
       href: mplus.html
-    - text: "Lavaan (R)"
+    - text: "lavaan (R)"
       href: lavaan.html
 output:
   html_document:

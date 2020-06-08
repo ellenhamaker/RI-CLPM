@@ -2,6 +2,7 @@
 title: "The RI-CLPM & Extensions"
 author: '[Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) and [Ellen Hamaker](https://www.uu.nl/medewerkers/ELHamaker) 
   - Utrecht University, the Netherlands'
+bibliography: p-references.bib
 ---
 
 ----
@@ -9,20 +10,25 @@ author: '[Jeroen Mulder](https://www.uu.nl/medewerkers/JDMulder) and [Ellen Hama
 ### The Random Intercept Cross-Lagged Panel Model
 The random intercept cross-lagged panel model (RI-CLPM) is rapidly gaining popularity as a structural equation modeling approach to longitudinal data. It allows for the decomposition of observed scores into within-person dynamics and between-person differences. 
 
-Use the top menu to navigate to the Mplus syntax or Lavaan code. 
-
-----
-
-### Extensions and Data
-The extensions that are discussed in this project are:
+This website is a supplement to "Three Extensions of the Random Intercept Cross-Lagged Panel Model" by Mulder and Hamaker (under review). It contains Mplus syntax and *lavaan* code for specifying the basic RI-CLPM and the following three extensions:
 
 1. including a time-invariant predictor and outcome,
 2. doing multiple group analysis, and
 3. using multiple indictors for variables. 
 
-You can find the simulated example datasets on [Github](https://github.com/jeroendmulder/RICLPM/tree/master/data).
+Use the top menu to navigate to the Mplus syntax or *lavaan* code. The *lavaan (R)* tab contains additional code for performing the $\bar{\chi^{2}}$-test (chi-bar-square test) in R. This test is used for comparing nested models where the more parsimonious model is based on constraining parameters on the bound of the parameter space (e.g., constraining a variance to 0). 
+
+----
+
+### Data
+You can find simulated example datasets (1189 units, 5 repeated-measures) on [Github](https://github.com/ellenhamaker/RI-CLPM/tree/master/data) to get hands-on experience with this modeling approach. The example data are motivated by @Narmandakh2020 who obtained five waves of data from 1189 adolescents on their sleep problems and anxiety over 15 years.
 
 ----
 
 ### Contact
 Questions can be addressed to the first author of the corresponding article, [Jeroen Mulder](mailto:j.d.mulder@uu.nl). 
+
+----
+
+### References
+

@@ -11,7 +11,7 @@
 
 
 
-<title>RI-CLPM &amp; Extensions using Mplus</title>
+<title>Using Mplus</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -354,7 +354,7 @@ div.tocify {
   <a href="mplus.html">Mplus</a>
 </li>
 <li>
-  <a href="lavaan.html">Lavaan (R)</a>
+  <a href="lavaan.html">lavaan (R)</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -368,7 +368,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">RI-CLPM &amp; Extensions using Mplus</h1>
+<h1 class="title toc-ignore">Using Mplus</h1>
 
 </div>
 
@@ -376,13 +376,12 @@ div.tocify {
 <hr />
 <div id="setup" class="section level2">
 <h2>Setup</h2>
-<p>For Mplus <span class="citation">(Muthén and Muthén 2017)</span> to work properly, please make sure that you save the input file with the model specification (<em>example.inp</em>) in the same folder as the data (<em>example.dat</em>). You can download the simulated example datasets <a href="https://github.com/jeroendmulder/RICLPM/tree/master/data">here</a>.</p>
-<p>Please note that program includes defaults, like that:</p>
+<p>For Mplus <span class="citation">(Muthén L. K. and Muthén 2017)</span> to work properly, make sure that you save the input file with the model specification (<em>example.inp</em>) in the same folder as the data (<em>example.dat</em>). You can download the simulated example datasets <a href="https://github.com/ellenhamaker/RI-CLPM/tree/master/data">here</a>. Mplus includes defaults, like that:</p>
 <ul>
 <li>observed and latent exogenous variables are correlated, and</li>
 <li>residuals of observed and latent outcome variables (which do not predict anything) in a path model are correlated.</li>
 </ul>
-<p>These defaults are included in Mplus to make the specification of many standard SEM models easier, but they are not always useful in the current modeling context. Therefore we will use the command <code>ANALYSIS: MODEL = NOCOV;</code> to overrule these defaults for the covariances and set all of them to zero.</p>
+<p>These defaults are included to make the specification of many standard SEM models easier, but they are not always useful in the current modeling context. Therefore, we use the command <code>ANALYSIS: MODEL = NOCOV;</code> to overrule these defaults for the covariances and set all of them to zero.</p>
 <hr />
 </div>
 <div id="the-ri-clpm" class="section level2 tabset tabset-fade">
@@ -405,7 +404,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -468,7 +467,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -523,10 +522,10 @@ OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 <h2>Ext. 1: time-invariant variables</h2>
 <p>Use the tabs below to navigate to the model specification of the RI-CLPM with</p>
 <ul>
-<li>a time-invariant predictor <span class="math inline">\(z_{1}\)</span> of the observed variables,</li>
+<li>a time-invariant predictor <span class="math inline">\(z_{1}\)</span> of the observed variables (constrained),</li>
 <li>a time-invariant predictor <span class="math inline">\(z_{1}\)</span> of the random intercepts,</li>
-<li>a time-invariant outcome <span class="math inline">\(z_{2}\)</span> of the observed variables, or</li>
-<li>a time-invariant outcome <span class="math inline">\(z_{2}\)</span> of the random intercepts.</li>
+<li>random intercepts predicting a time-invariant outcome <span class="math inline">\(z_{2}\)</span>, or</li>
+<li>within components predicting a time-invariant outcome <span class="math inline">\(z_{2}\)</span>.</li>
 </ul>
 <div id="z_1-predicting-observed" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> predicting observed</h3>
@@ -541,7 +540,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
 
@@ -591,7 +590,7 @@ OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 </div>
 <div id="z_1-predicting-ris" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> predicting RI’s</h3>
-<p>Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor z1 for the random intercepts.</p>
+<p>Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor <span class="math inline">\(z_{1}\)</span> for the random intercepts.</p>
 <pre><code>TITLE:      RI-CLPM, 5 waves, including a time-invariant predictor for
             the random intercepts. 
    
@@ -602,7 +601,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
 
@@ -649,12 +648,12 @@ MODEL:      ! Create two individual factors (random intercepts)
 OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 <hr />
 </div>
-<div id="observed-predicting-z_2" class="section level3">
-<h3>observed predicting <span class="math inline">\(z_{2}\)</span></h3>
-<p>Below you can find the syntax for a RI-CLPM with 5 waves and the observed variables predicting the time-invariant outcome <span class="math inline">\(z_{2}\)</span>. The effect of the observed variables on the outcome <span class="math inline">\(z_{2}\)</span> is constrained to be the same across waves.</p>
-<pre><code>TITLE:      RI-CLPM, 5 waves, including a time-invariant predictor for
-            the observed variables (constrained) and a time-invariant 
-            outcome for the observed variables.  
+<div id="ris-predicting-z_2" class="section level3">
+<h3>RI’s predicting <span class="math inline">\(z_{2}\)</span></h3>
+<p>Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome <span class="math inline">\(z_{2}\)</span>.</p>
+<pre><code>TITLE:      RI-CLPM, 5 waves.
+              Time-invariant predictor z1 for observed variables (constrained).
+              Between components predicting time-invariant outcome z2.
    
 DATA:       FILE = RICLPM-Z.dat;
                 
@@ -662,21 +661,16 @@ VARIABLE:   NAMES = x1-x5 y1-y5 z2 z1;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
 
             ! Estimate the covariance between the random intercepts
             RIx WITH RIy;
 
-            ! Regression of observed variables on z1 (constrained)
-            x1-x5 ON z1 (s1);
-            y1-y5 ON z1 (s2);
-
-            ! Regres future outcome on observed variables. 
-            z2 ON x1-x5 (o1)
-            z2 ON y1-y5 (o2);
-
+            ! Regres distal outcome on random intercepts
+            z2 ON RIx RIy;
+            
             ! Create within-person centered variables
             wx1 BY x1@1; 
             wx2 BY x2@1;
@@ -718,12 +712,12 @@ MODEL:      ! Create two individual factors (random intercepts)
 OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 <hr />
 </div>
-<div id="ris-predicting-z_2" class="section level3">
-<h3>RIs predicting <span class="math inline">\(z_{2}\)</span></h3>
-<p>Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome <span class="math inline">\(z_{2}\)</span>.</p>
-<pre><code>TITLE:      RI-CLPM, 5 waves, including a time-invariant predictor for
-            the observed variables (constrained) and a time-invariant 
-            outcome for the random intercepts.  
+<div id="within-predicting-z_2" class="section level3">
+<h3>Within predicting <span class="math inline">\(z_{2}\)</span></h3>
+<p>Below you can find the syntax for a RI-CLPM with 5 waves and the within components predicting the time-invariant outcome <span class="math inline">\(z_{2}\)</span>.</p>
+<pre><code>TITLE:      RI-CLPM, 5 waves
+              Time-invariant predictor z1 for observed variables (constrained).
+              Within components predicting time-invariant outcome z2.
    
 DATA:       FILE = RICLPM-Z.dat;
                 
@@ -738,13 +732,6 @@ MODEL:      ! Create two individual factors (random intercepts)
             ! Estimate the covariance between the random intercepts
             RIx WITH RIy;
 
-            ! Regression of observed variables on z1 (constrained)
-            x1-x5 ON z1 (s1);
-            y1-y5 ON z1 (s2);
-
-            ! Regres future outcome on random intercepts. 
-            z2 ON RIx RIy;
-            
             ! Create within-person centered variables
             wx1 BY x1@1; 
             wx2 BY x2@1;
@@ -761,6 +748,9 @@ MODEL:      ! Create two individual factors (random intercepts)
             ! Constrain the measurement error variances to zero
             x1-y5@0;
 
+              ! Regres distal outcome on within components
+            z2 ON wx1-wx5 wy1-wy5;
+            
             ! Regression of observed variables on z1 (constrained)
             x1-x5 ON z1 (s1);
             y1-y5 ON z1 (s2);
@@ -810,7 +800,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5 GROUP;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -877,7 +867,7 @@ VARIABLE:   NAMES = x1-x5 y1-y5 GROUP;
     
 ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
     
-MODEL:      ! Create two individual factors (random intercepts)
+MODEL:      ! Create between components (random intercepts)
             RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
             RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -942,7 +932,7 @@ OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 <h2>Ext. 3: multiple indicator</h2>
 <p>Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM, 5 waves and 3 indicators for each variable at each wave. The five steps correspond to:</p>
 <ul>
-<li>the initial model (Step 1),</li>
+<li>the configural model (Step 1),</li>
 <li>weak factorial invariance (Step 2),</li>
 <li>strong factorial invariance (Step 3),</li>
 <li>strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra), and</li>
@@ -1409,7 +1399,7 @@ OUTPUT:     TECH1 STDYX SAMPSTAT CINTERVAL;</code></pre>
 <h2>References</h2>
 <div id="refs" class="references">
 <div id="ref-Meredith1993">
-<p>Meredith, William. 1993. “Measurement invariance, factor analysis and factorial invariance.” <em>Psychometrika</em>. <a href="https://doi.org/10.1007/BF02294825">https://doi.org/10.1007/BF02294825</a>.</p>
+<p>Meredith, William. 1993. “Measurement invariance, factor analysis and factorial invariance.” <em>Psychometrika</em>. doi:<a href="https://doi.org/10.1007/BF02294825">10.1007/BF02294825</a>.</p>
 </div>
 <div id="ref-Mplus8">
 <p>Muthén, L. K., and B. O. Muthén. 2017. <em>Mplus User’s Guide</em>. Eighth Edition. Los Angeles, CA: Muthén &amp; Muthén.</p>

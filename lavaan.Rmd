@@ -1,5 +1,5 @@
 ---
-title: "RI-CLPM & Extensions using Lavaan"
+title: "Using lavaan (R)"
 output: 
   html_document:
     toc:  true
@@ -11,31 +11,26 @@ bibliography: references.bib
 ---
 
 ## Setup
-Below you can find the code for installing and loading the required package `Lavaan` [@lavaan], as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the `file.choose()`-function. You can download the simulated example datasets [here](https://jeroendmulder.github.io/RICLPM/data). 
+Below you can find the code for installing and loading the required package `lavaan` [@lavaan], as well as for reading in the data for the Random Intercept Cross-Lagged Panel Model (RI-CLPM) and its 3 extensions. You can specify the path to the data yourself, or through a menu by using the `file.choose()`-function. You can download the simulated example datasets [here](https://github.com/ellenhamaker/RI-CLPM/tree/master/data). 
 
 ```{r setup, eval = F, message = F}
 # If necessary, install the 'Lavaan' package. 
 # install.packages('lavaan', dependencies = T)
-
 # Load the required packages. 
 require(lavaan) 
 
 # Load in the data. 
 ## Traditional RI-CLPM
-dat <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/data/RICLPM.dat", 
-                  col.names = c("x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4", "x5", "y5")) 
-
-# Extension 1
-datZ <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/data/RICLPM-Z.dat",
-                   col.names = c("x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4", "x5", "y5", "z1", "z2"))
-
+dat <- read.table("/Users/jeroenmulder/Git/RICLPM/data/RICLPM.dat", 
+                  col.names = c("x1", "x2", "x3", "x4", "x5", "y1", "y2", "y3", "y4", "y5")) 
+## Extension 1
+datZ <- read.table("/Users/jeroenmulder/Git/RICLPM/data/RICLPM-Z.dat",
+                   col.names = c("x1", "x2", "x3", "x4", "x5", "y1", "y2", "y3", "y4", "y5", "z2", "z1"))
 ## Extension 2
-datMG <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/data/RICLPM-MG.dat",
-                    col.names = c("x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4", "x5", "y5", "G")) 
-
-
-# Extension 3
-datMI <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/data/RICLPM-MI.dat",
+datMG <- read.table("/Users/jeroenmulder/Git/RICLPM/data/RICLPM-MG.dat",
+                    col.names = c("x1", "x2", "x3", "x4", "x5", "y1", "y2", "y3", "y4", "y5", "G")) 
+## Extension 3
+datMI <- read.table("/Users/jeroenmulder/Git/RICLPM/data/RICLPM-MI.dat",
                    col.names = c("x11", "x12", "x13",
                                  "x21", "x22", "x23",
                                  "x31", "x32", "x33",
@@ -47,7 +42,6 @@ datMI <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/
                                  "y31", "y32", "y33", 
                                  "y41", "y42", "y43", 
                                  "y51", "y52", "y53"))
-
 ```
 
 ---
@@ -55,17 +49,17 @@ datMI <- read.table("C:/Users/5879167/surfdrive/Research/RI-CLPM Teacher Corner/
 ## The RI-CLPM {.tabset .tabset-fade}
 To specify the RI-CLPM we need four parts. 
 
-1. A *between part*, consisting of the random intercepts. It is specified  using the `=~` command, `RIx =~ 1*x1 1*x2 ...`, where `1*` fixes the factor loading to one.
-2. A *within part*, consisting of within-unit fluctuations. It is also specified using the `=~` command, `wx1 =~ 1*x1; wx2 =~ 1*x2; ...`. 
-3. The *lagged regressions* between the within-unit components, using `wx2 ~ wx1 wy1; wx3 ~ wx2 wy2; ...`. 
-4. Relevant *covariances* in both the between and within part. In the within part the components at wave 1, and their residuals at waves 2 and further are correlated within each wave, using `wx1 ~~ wy1; wx2 ~~ wy2;...`. We also need to specify their (residual) variances here using `wx1 ~~ wx1; wx2 ~~ wx2; ...`. For the between part we have to specify the variances and covariance of the random intercepts using `RIx ~~ RIy;`. 
+* A *between part*, consisting of the random intercepts. It is specified  using the `=~` command, `RIx =~ 1*x1 1*x2 ...`, where `1*` fixes the factor loading to one.
+* A *within part*, consisting of within-unit fluctuations. It is also specified using the `=~` command, `wx1 =~ 1*x1; wx2 =~ 1*x2; ...`. 
+* The *lagged regressions* between the within-unit components, using `wx2 ~ wx1 wy1; wx3 ~ wx2 wy2; ...`. 
+* Relevant *covariances* in both the between and within part. In the within part the components at wave 1, and their residuals at waves 2 and further are correlated within each wave, using `wx1 ~~ wy1; wx2 ~~ wy2;...`. We also need to specify their (residual) variances here using `wx1 ~~ wx1; wx2 ~~ wx2; ...`. For the between part we have to specify the variances and covariance of the random intercepts using `RIx ~~ RIy;`. 
 
 ### The basic model
 The code for specifying the basic RI-CLPM is given below. 
 
 ```{r RICLPM, eval = F}
 RICLPM <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -75,7 +69,6 @@ RICLPM <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
@@ -114,17 +107,46 @@ RICLPM <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM.fit <- lavaan(RICLPM, data = dat, missing = 'ML',
-                     meanstructure = T, int.ov.free = T) 
-
+RICLPM.fit <- lavaan(RICLPM, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM.fit, standardized = T)
 ```
 
+```{r CLPM, eval = F, message = F}
+CLPM <- '
+  # Estimate the lagged effects between the observed variables.
+  x2 + y2 ~ x1 + y1
+  x3 + y3 ~ x2 + y2
+  x4 + y4 ~ x3 + y3
+  x5 + y5 ~ x4 + y4
+
+  # Estimate the covariance between the observed variables at the first wave. 
+  x1 ~~ y1 # Covariance
+  
+  # Estimate the covariances between the residuals of the observed variables.
+  x2 ~~ y2
+  x3 ~~ y3
+  x4 ~~ y4
+  x5 ~~ y5
+  
+  # Estimate the (residual) variance of the observed variables.
+  x1 ~~ x1 # Variances
+  y1 ~~ y1 
+  x2 ~~ x2 # Residual variances
+  y2 ~~ y2 
+  x3 ~~ x3 
+  y3 ~~ y3 
+  x4 ~~ x4 
+  y4 ~~ y4 
+  x5 ~~ x5
+  y5 ~~ y5
+'
+CLPM.fit <- lavaan(CLPM, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
+summary(CLPM.fit, standardized = T)
+```
 ---
 
 ### Constraints over time
-Imposing constraints to the model can be achieved through **premultiplication**. It means that we have to add the number that we want to fix the parameter to and an asterisk, to the parameter in the model specification. For example, if we want to fix the factor loading of item `x1` to factor `F` to 0, we need to add `0*` to `F =~ x1`, resulting in `F =~ 0*x1`. Using premultiplication we can also constrain parameters to be the same by giving them the same label. Below we specify a RI-CLPM with the following constraints: 
+Imposing constraints to the model can be achieved through **pre-multiplication**. It means that we have to prepend the number that we want to fix the parameter to, and an asterisk, to the parameter in the model specification. For example, `F =~ 0*x1` fixes the factor loading of item `x1` to factor `F` to 0. Using pre-multiplication we can also constrain parameters to be the same by giving them the same label. Below we specify a RI-CLPM with the following constraints: 
 
 1) fixed auto-regressive and cross-lagged relations over time, `wx2 ~ a*wx1 + b*wy1; ...`, 
 2) time-invariant (residual) (co-)variances in the within-person part `wx2 ~~ cov*wy2; ...`, `wx2 ~~ vx*wx2; ...`, and `wy2 ~~ vy*wy2; ...`, and 
@@ -132,11 +154,9 @@ Imposing constraints to the model can be achieved through **premultiplication**.
 
 
 ```{r RICLPM1, eval = F, echo = F}
-
 # Unconstrained factor loadings for the random intercept. 
-
 RICLPM1 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + x2 + x3 + x4 + x5
   RIy =~ 1*y1 + y2 + y3 + y4 + y5
   
@@ -146,25 +166,24 @@ RICLPM1 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Estimate the lagged effects between the within-person centered variables.
   wx2 + wy2 ~ wx1 + wy1
   wx3 + wy3 ~ wx2 + wy2
   wx4 + wy4 ~ wx3 + wy3
   wx5 + wy5 ~ wx4 + wy4
-
+  
   # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
   wx2 ~~ wy2
   wx3 ~~ wy3
   wx4 ~~ wy4 
   wx5 ~~ wy5
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -172,7 +191,7 @@ RICLPM1 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variance
   wy1 ~~ wy1 
@@ -185,19 +204,14 @@ RICLPM1 <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM1.fit <- lavaan(RICLPM1, data = dat, missing = 'ML',
-                     meanstructure = T, int.ov.free = T) 
-
+RICLPM1.fit <- lavaan(RICLPM1, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM1.fit, standardized = T)
 ```
 
 ```{r RICLPM2, eval = F, echo = F}
-
 # Fixed autoregressive and cross-lagged relations over time.  
-
 RICLPM2 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -207,13 +221,12 @@ RICLPM2 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Estimate the lagged effects between the within-person centered variables.
   wx2 ~ a*wx1 + b*wy1 
   wy2 ~ c*wx1 + d*wy1
@@ -223,13 +236,13 @@ RICLPM2 <- '
   wy4 ~ c*wx3 + d*wy3
   wx5 ~ a*wx4 + b*wy4
   wy5 ~ c*wx4 + d*wy4
-
+  
   # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
   wx2 ~~ wy2
   wx3 ~~ wy3
   wx4 ~~ wy4 
   wx5 ~~ wy5
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -237,7 +250,7 @@ RICLPM2 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variance
   wy1 ~~ wy1 
@@ -249,21 +262,15 @@ RICLPM2 <- '
   wy4 ~~ wy4 
   wx5 ~~ wx5
   wy5 ~~ wy5
-
 '
-
-RICLPM2.fit <- lavaan(RICLPM2, data = dat, missing = 'ML',
-                     meanstructure = T, int.ov.free = T) 
-
+RICLPM2.fit <- lavaan(RICLPM2, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM2.fit, standardized = T)
 ```
 
 ```{r RICLPM3, eval = F, echo = F}
-
 # Constrained grand means. 
-
 RICLPM3 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -273,13 +280,12 @@ RICLPM3 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Estimate the lagged effects between the within-person centered variables.
   wx2 ~ wx1 + wy1 
   wy2 ~ wx1 + wy1
@@ -289,13 +295,13 @@ RICLPM3 <- '
   wy4 ~ wx3 + wy3
   wx5 ~ wx4 + wy4
   wy5 ~ wx4 + wy4
-
+  
   # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
   wx2 ~~ wy2
   wx3 ~~ wy3
   wx4 ~~ wy4 
   wx5 ~~ wy5
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -303,7 +309,7 @@ RICLPM3 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variance
   wy1 ~~ wy1 
@@ -320,17 +326,13 @@ RICLPM3 <- '
   x1 + x2 + x3 + x4 + x5 ~ mx*1
   y1 + y2 + y3 + y4 + y5 ~ my*1
 '
-
-RICLPM3.fit <- lavaan(RICLPM3, data = dat, missing = 'ML',
-                      meanstructure = T, int.ov.free = T) 
-
+RICLPM3.fit <- lavaan(RICLPM3, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM3.fit, standardized = T)
 ```
 
 ```{r RICLPM5, eval = F, echo = T}
-
 RICLPM5 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -340,13 +342,12 @@ RICLPM5 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Estimate the lagged effects between the within-person centered variables (constrained).
   wx2 ~ a*wx1 + b*wy1 
   wy2 ~ c*wx1 + d*wy1
@@ -356,14 +357,14 @@ RICLPM5 <- '
   wy4 ~ c*wx3 + d*wy3
   wx5 ~ a*wx4 + b*wy4
   wy5 ~ c*wx4 + d*wy4
-
+  
   # Estimate the covariances between the residuals of the within-person centered variables 
   # (the innovations, constrained).
   wx2 ~~ cov*wy2
   wx3 ~~ cov*wy3
   wx4 ~~ cov*wy4 
   wx5 ~~ cov*wy5
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -371,7 +372,7 @@ RICLPM5 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables (constrained).
   wx1 ~~ wx1 # Variance
   wy1 ~~ wy1 
@@ -388,10 +389,7 @@ RICLPM5 <- '
   x1 + x2 + x3 + x4 + x5 ~ mx*1
   y1 + y2 + y3 + y4 + y5 ~ my*1
 '
-
-RICLPM5.fit <- lavaan(RICLPM5, data = dat, missing = 'ML',
-                      meanstructure = T, int.ov.free = T) 
-
+RICLPM5.fit <- lavaan(RICLPM5, data = dat, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM5.fit, standardized = T)
 ```
 
@@ -400,19 +398,17 @@ summary(RICLPM5.fit, standardized = T)
 ## Ext. 1: time-invariant predictor {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of the RI-CLPM with
 
-- a time-invariant predictor $z_{1}$ of the observed variables,
-- a time-invariant predictor $z_{1}$ of the random intercepts, 
-- a time-invariant outcome $z_{2}$ of the observed variables, or
-- a time-invariant outcome $z_{2}$ of the random intercepts. 
-
-You can download the simulated example dataset *RICLPMZ.dat* [here](https://jeroendmulder.github.io/RI-CLPM/data/RICLPMZ.dat). 
+* a time-invariant predictor $z_{1}$ of the observed variables (constrained),
+* a time-invariant predictor $z_{1}$ of the random intercepts,
+* random intercepts predicting a time-invariant outcome $z_{2}$, or
+* within components predicting a time-invariant outcome $z_{2}$.
 
 ### $z_{1}$ predicting observed
 Below you can find the code for a RI-CLPM with 5 waves and a time-invariant predictor $z_{1}$ for the observed variables. The effect of $z_{1}$ on the observed variables is constrained to be the same across waves.
 
 ```{r RICLPM-Z, eval = F}
 RICLPM.ext1 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -422,23 +418,22 @@ RICLPM.ext1 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Regression of observed variables on z1 (constrained). 
   x1 + x2 + x3 + x4 + x5 ~ s1*z1 # Constrained over time. 
   y1 + y2 + y3 + y4 + y5 ~ s2*z1 # Constrained over time. 
-
+  
   # Estimate the lagged effects between the within-person centered variables.
   wx2 + wy2 ~ wx1 + wy1
   wx3 + wy3 ~ wx2 + wy2
   wx4 + wy4 ~ wx3 + wy3
   wx5 + wy5 ~ wx4 + wy4
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -452,7 +447,7 @@ RICLPM.ext1 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variances
   wy1 ~~ wy1 
@@ -465,10 +460,7 @@ RICLPM.ext1 <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM.ext1.fit <- lavaan(RICLPM.ext1, data = datZ, missing = 'ML',
-                          meanstructure = T, int.ov.free = T) 
-
+RICLPM.ext1.fit <- lavaan(RICLPM.ext1, data = datZ, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM.ext1.fit, standardized = T)
 ```
 
@@ -477,9 +469,8 @@ summary(RICLPM.ext1.fit, standardized = T)
 ### $z_{1}$ predicting RIs
 Below you can find the code for a RI-CLPM with 5 waves and a time-invariant predictor $z_{1}$ for the random intercepts. 
 ```{r RICLPM-Z1, eval = F}
-
 RICLPM1.ext1 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -489,23 +480,22 @@ RICLPM1.ext1 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Regression of random intercepts on z1. 
   RIx ~ z1 
   RIy ~ z1 
-
+  
   # Estimate the lagged effects between the within-person centered variables.
   wx2 + wy2 ~ wx1 + wy1
   wx3 + wy3 ~ wx2 + wy2
   wx4 + wy4 ~ wx3 + wy3
   wx5 + wy5 ~ wx4 + wy4
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -519,7 +509,7 @@ RICLPM1.ext1 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variances
   wy1 ~~ wy1 
@@ -532,153 +522,28 @@ RICLPM1.ext1 <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM1.ext1.fit <- lavaan(RICLPM1.ext1, data = datZ, missing = 'ML', 
-                           meanstructure = T, int.ov.free = T) 
-
+RICLPM1.ext1.fit <- lavaan(RICLPM1.ext1, data = datZ, missing = 'ML', meanstructure = T, int.ov.free = T) 
 summary(RICLPM1.ext1.fit, standardized = T)
 ```
 
 ---
 
-### observed predicting $z_{2}$
-Below you can find the code for a RI-CLPM with 5 waves and the observed variables predicting the time-invariant outcome $z_{2}$. The effect of the observed variables on the outcome $z_{2}$ is constrained to be the same across waves. 
+### RI's predicting $z_{2}$
+*lavaan* code will arrive soon for this model.
 
-```{r RICLPM-Z2, eval = F}
-RICLPM2.ext1 <- '
-  # Create two individual factors (random intercepts)
-  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
-  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
-  
-  # Create within-person centered variables
-  wx1 =~ 1*x1
-  wx2 =~ 1*x2
-  wx3 =~ 1*x3 
-  wx4 =~ 1*x4
-  wx5 =~ 1*x5
 
-  wy1 =~ 1*y1
-  wy2 =~ 1*y2
-  wy3 =~ 1*y3
-  wy4 =~ 1*y4
-  wy5 =~ 1*y5
-
-  # Regression of z2 on observed (constrained). 
-  z2 ~ s1*x1 + s1*x2 + s1*x3 + s1*x4 + s1*x5 # Constrained over time. 
-  z2 ~ s2*y1 + s2*y2 + s2*y3 + s2*y4 + s2*y5 # Constrained over time. 
-
-  # Estimate the lagged effects between the within-person centered variables.
-  wx2 + wy2 ~ wx1 + wy1
-  wx3 + wy3 ~ wx2 + wy2
-  wx4 + wy4 ~ wx3 + wy3
-  wx5 + wy5 ~ wx4 + wy4
-
-  # Estimate the covariance between the within-person centered variables at the first wave. 
-  wx1 ~~ wy1 # Covariance
-  
-  # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
-  wx2 ~~ wy2
-  wx3 ~~ wy3
-  wx4 ~~ wy4
-  wx5 ~~ wy5
-  
-  # Estimate the variance and covariance of the individual factors. 
-  RIx ~~ RIx
-  RIy ~~ RIy
-  RIx ~~ RIy
-
-  # Estimate the (residual) variance of the within-person centered variables.
-  wx1 ~~ wx1 # Variances
-  wy1 ~~ wy1 
-  wx2 ~~ wx2 # Residual variances
-  wy2 ~~ wy2 
-  wx3 ~~ wx3 
-  wy3 ~~ wy3 
-  wx4 ~~ wx4 
-  wy4 ~~ wy4 
-  wx5 ~~ wx5
-  wy5 ~~ wy5
-'
-
-RICLPM2.ext1.fit <- lavaan(RICLPM2.ext1, data = datZ, missing = 'ML',
-                          meanstructure = T, int.ov.free = T) 
-
-summary(RICLPM2.ext1.fit, standardized = T)
-```
-
-### RIs predicting $z_{2}$
-Below you can find the code for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome $z_{2}$.
-
-```{r RICLPM-Z3, eval = F}
-RICLPM3.ext1 <- '
-  # Create two individual factors (random intercepts)
-  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
-  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
-  
-  # Create within-person centered variables
-  wx1 =~ 1*x1
-  wx2 =~ 1*x2
-  wx3 =~ 1*x3 
-  wx4 =~ 1*x4
-  wx5 =~ 1*x5
-
-  wy1 =~ 1*y1
-  wy2 =~ 1*y2
-  wy3 =~ 1*y3
-  wy4 =~ 1*y4
-  wy5 =~ 1*y5
-
-  # Regression of z2 on random intercepts (constrained). 
-  z2 ~ RIx + RIy
-  
-  # Estimate the lagged effects between the within-person centered variables.
-  wx2 + wy2 ~ wx1 + wy1
-  wx3 + wy3 ~ wx2 + wy2
-  wx4 + wy4 ~ wx3 + wy3
-  wx5 + wy5 ~ wx4 + wy4
-
-  # Estimate the covariance between the within-person centered variables at the first wave. 
-  wx1 ~~ wy1 # Covariance
-  
-  # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
-  wx2 ~~ wy2
-  wx3 ~~ wy3
-  wx4 ~~ wy4
-  wx5 ~~ wy5
-  
-  # Estimate the variance and covariance of the individual factors. 
-  RIx ~~ RIx
-  RIy ~~ RIy
-  RIx ~~ RIy
-
-  # Estimate the (residual) variance of the within-person centered variables.
-  wx1 ~~ wx1 # Variances
-  wy1 ~~ wy1 
-  wx2 ~~ wx2 # Residual variances
-  wy2 ~~ wy2 
-  wx3 ~~ wx3 
-  wy3 ~~ wy3 
-  wx4 ~~ wx4 
-  wy4 ~~ wy4 
-  wx5 ~~ wx5
-  wy5 ~~ wy5
-'
-
-RICLPM3.ext1.fit <- lavaan(RICLPM3.ext1, data = datZ, missing = 'ML',
-                          meanstructure = T, int.ov.free = T) 
-
-summary(RICLPM3.ext1.fit, standardized = T)
-```
+### Within predicting $z_{2}$
+*lavaan* code will arrive soon for this model.
 
 ## Ext. 2: multiple group {.tabset .tabset-fade}
-Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). You can download the simulated example dataset *MGRICLPM.dat* [here](https://jeroendmulder.github.io/RICLPM/data/MGRICLPM.dat).
+Use the tabs below to navigate to the model specification of the basic multiple-group model, or the model with constrained lagged parameters (and intercepts across groups). 
 
 ### The basic model
 Below you can find the code for a multiple group RI-CLPM with 5 waves.
 
 ```{r RICLPM-MG, eval = F}
 RICLPM.ext2 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -688,19 +553,16 @@ RICLPM.ext2 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
   # Estimate the lagged effects between the within-person centered variables.
   wx2 + wy2 ~ wx1 + wy1
   wx3 + wy3 ~ wx2 + wy2
   wx4 + wy4 ~ wx3 + wy3
   wx5 + wy5 ~ wx4 + wy4
-
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -714,7 +576,6 @@ RICLPM.ext2 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variances
   wy1 ~~ wy1 
@@ -727,12 +588,8 @@ RICLPM.ext2 <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM.ext2.fit <- lavaan(RICLPM.ext2, data = datMG, missing = 'ML',
-                           group = "G", 
-                           meanstructure = T, int.ov.free = T)
+RICLPM.ext2.fit <- lavaan(RICLPM.ext2, data = datMG, missing = 'ML', group = "G", meanstructure = T, int.ov.free = T)
 summary(RICLPM.ext2.fit)
-
 ```
 
 ---
@@ -742,7 +599,7 @@ Below you can find the code for a multiple group RI-CLPM with 4 waves. The lagge
 
 ```{r RICLPM-MG1, eval = F}
 RICLPM1.ext2 <- '
-  # Create two individual factors (random intercepts)
+  # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
   
@@ -752,13 +609,12 @@ RICLPM1.ext2 <- '
   wx3 =~ 1*x3 
   wx4 =~ 1*x4
   wx5 =~ 1*x5
-
   wy1 =~ 1*y1
   wy2 =~ 1*y2
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-
+  
   # Estimate the lagged effects between the within-person centered variables. Constrain the  
   # autoregressive effects across groups. 
   wx2 ~ c(a1, a1)*wx1 + c(b1, b1)*wy1
@@ -769,7 +625,7 @@ RICLPM1.ext2 <- '
   wy4 ~ c(c3, c3)*wx3 + c(d3, d3)*wy3 
   wx5 ~ c(a4, a4)*wx4 + c(b4, b4)*wy4
   wy5 ~ c(c4, c4)*wx4 + c(d4, d4)*wy4
-
+  
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
@@ -783,7 +639,7 @@ RICLPM1.ext2 <- '
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
-
+  
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variances
   wy1 ~~ wy1 
@@ -796,12 +652,8 @@ RICLPM1.ext2 <- '
   wx5 ~~ wx5
   wy5 ~~ wy5
 '
-
-RICLPM1.ext2.fit <- lavaan(RICLPM1.ext2, data = datMG, missing = 'ML',
-                           group = "G", 
-                           meanstructure = T, int.ov.free = T)
+RICLPM1.ext2.fit <- lavaan(RICLPM1.ext2, data = datMG, missing = 'ML', group = "G", meanstructure = T, int.ov.free = T)
 summary(RICLPM1.ext2.fit)
-
 ```
 
 ---
@@ -809,7 +661,7 @@ summary(RICLPM1.ext2.fit)
 ## Ext. 3: multiple indicator {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM, 5 waves and 3 indicators for each variable at each wave. The five steps correspond to:
 
-- the initial model (Step 1),
+- the configural model (Step 1),
 - weak factorial invariance (Step 2),
 - strong factorial invariance (Step 3),
 - strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra), and
@@ -879,10 +731,8 @@ RICLPM1.ext3 <- '
   
   # Constrain covariance of the between factors and exogenous within factors to 0. 
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
-
 '
 RICLPM1.ext3.fit <- cfa(RICLPM1.ext3, data = datMI, missing = 'ML')
-
 summary(RICLPM1.ext3.fit, standardized = T)
 ```
 
@@ -948,10 +798,8 @@ RICLPM2.ext3 <- '
   
   # Constrain covariance of the between factors and exogenous within factors to 0. 
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
-
 '
 RICLPM2.ext3.fit <- cfa(RICLPM2.ext3, data = datMI, missing = 'ML')
-
 summary(RICLPM2.ext3.fit, standardized = T)
 ```
 
@@ -996,18 +844,15 @@ RICLPM3.ext3 <- '
   
   # Constrained intercepts over time (this is necessary for strong factorial 
   # invariance; without these contraints we have week factorial invariance). 
-  
   x11 + x21 + x31 + x41 + x51 ~ g*1
   x12 + x22 + x32 + x42 + x52 ~ h*1
   x13 + x23 + x33 + x43 + x53 ~ i*1
-
   y11 + y21 + y31 + y41 + y51 ~ j*1
   y12 + y22 + y32 + y42 + y52 ~ k*1
   y13 + y23 + y33 + y43 + y53 ~ l*1
   
   # Free latent means from t = 2 onward (only do this in combination with the 
   # constraints on the intercepts; without these, this would not be specified).
-  
   WFX2 + WFX3 + WFX4 + WFX5 + WFY2 + WFY3 + WFY4 + WFY5 ~ 1
   
   #########################
@@ -1033,10 +878,8 @@ RICLPM3.ext3 <- '
   
   # Constrain covariance of the between factors and exogenous within factors to 0. 
   RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
-
 '
 RICLPM3.ext3.fit <- cfa(RICLPM3.ext3, data = datMI, missing = 'ML')
-
 summary(RICLPM3.ext3.fit, standardized = T)
 ```
 
@@ -1077,7 +920,6 @@ RICLPM4.ext3 <- '
   RIX1 ~~ 0*RIX1
   RIX2 ~~ 0*RIX2
   RIX3 ~~ 0*RIX3
-
   RIY1 ~~ 0*RIY1
   RIY2 ~~ 0*RIY2
   RIY3 ~~ 0*RIY3
@@ -1102,18 +944,15 @@ RICLPM4.ext3 <- '
   
   # Constrained intercepts over time (this is necessary for strong factorial 
   # invariance; without these contraints we have week factorial invariance). 
-  
   x11 + x21 + x31 + x41 + x51 ~ g*1
   x12 + x22 + x32 + x42 + x52 ~ h*1
   x13 + x23 + x33 + x43 + x53 ~ i*1
-
   y11 + y21 + y31 + y41 + y51 ~ j*1
   y12 + y22 + y32 + y42 + y52 ~ k*1
   y13 + y23 + y33 + y43 + y53 ~ l*1
   
   # Free latent means from t = 2 onward (only do this in combination with the 
   # constraints on the intercepts; without these, this would not be specified).
-  
   WFX2 + WFX3 + WFX4 + WFX5 + WFY2 + WFY3 + WFY4 + WFY5 ~ 1
   
   #########################
@@ -1139,10 +978,8 @@ RICLPM4.ext3 <- '
   
   # Constrain covariance of the between factors and exogenous within factors to 0. 
   RIX + RIY + RIX1 + RIX2 + RIX3 + RIY1 + RIY2 + RIY3 ~~ 0*WFY1 + 0*WFX1
-
 '
 RICLPM4.ext3.fit <- cfa(RICLPM4.ext3, data = datMI, missing = 'ML')
-
 summary(RICLPM4.ext3.fit, standardized = T)
 ```
 
@@ -1174,19 +1011,17 @@ RICLPM5.ext3 <- '
   
   # Constrained intercepts over time (this is necessary for strong factorial 
   # invariance; without these contraints we have week factorial invariance). 
-  
   x11 + x21 + x31 + x41 + x51 ~ g*1
   x12 + x22 + x32 + x42 + x52 ~ h*1
   x13 + x23 + x33 + x43 + x53 ~ i*1
-
   y11 + y21 + y31 + y41 + y51 ~ j*1
   y12 + y22 + y32 + y42 + y52 ~ k*1
   y13 + y23 + y33 + y43 + y53 ~ l*1
-
+  
   # Free latent means from t = 2 onward (only do this in combination with the 
   # constraints on the intercepts; without these, this would not be specified).
   FX2 + FX3 + FX4 + FX5 + FY2 + FY3 + FY4 + FY5 ~ 1
-
+  
   ################
   # BETWEEN PART #
   ################
@@ -1194,20 +1029,18 @@ RICLPM5.ext3 <- '
   # Create between factors (random intercepts). 
   RIX =~ 1*FX1 + 1*FX2 + 1*FX3 + 1*FX4 + 1*FX5
   RIY =~ 1*FY1 + 1*FY2 + 1*FY3 + 1*FY4 + 1*FY5
-
   # Set the residual variances of all FX and FY variables to 0. 
   FX1 ~~ 0*FX1
   FX2 ~~ 0*FX2
   FX3 ~~ 0*FX3
   FX4 ~~ 0*FX4
   FX5 ~~ 0*FX5
-
   FY1 ~~ 0*FY1
   FY2 ~~ 0*FY2
   FY3 ~~ 0*FY3
   FY4 ~~ 0*FY4
   FY5 ~~ 0*FY5
-
+  
   ###############
   # WITHIN PART #
   ###############
@@ -1244,30 +1077,53 @@ RICLPM5.ext3 <- '
   # Set correlations between the between-factors (random intercepts) and within-
   # factors at wave 1 at 0. 
   RIX + RIY ~~ 0*WFX1 + 0*WFY1
-
 '
 RICLPM5.ext3.fit <- cfa(RICLPM5.ext3, data = datMI, missing = 'ML')
-
 summary(RICLPM5.ext3.fit, standardized = T)
 ```
 
 ---
 
+## $\bar{\chi^{2}}$-test
+
+The use of the chi-square difference test is wide-spread in the SEM community to test constaints on parameters. However, when constraints are placed on the bound of the parameter space, we should use the chi-bar-square test ($\bar{\chi^{2}}$-test) [@Stoel2006]. For example, if we constrain the variances of all random intercepts (and their covariance) in the RI-CLPM to zero, we obtain a model that is nested under the RI-CLPM, and that is statistically equivalent to the traditional cross-lagged panel model (CLPM). Below you can find R code for performing the chi-bar-square test (code by [Rebecca M. Kuiper](https://www.uu.nl/staff/rmkuiper)) for comparing these two models. It involves 
+
+1. fitting both the RI-CLPM (`RICLPM.fit`) and CLPM (`CLPM.fit`);
+2. extracting the covariance matrix of the random intercepts;
+3. extracting the $\chi^{2}$ and degrees of freedom; and 
+4. performing the $\bar{\chi^{2}}$-test.
+
+```{r chi-square-bar, eval = F, message = F}
+# Install and load the required packages. 
+## library(devtools)
+## install_github("rebeccakuiper/ChiBarSq.DiffTest")
+library(ChiBarSq.DiffTest)
+
+# Step 1
+## Fit the RI-CLPM (RICLPM.fit) and the CLPM (CLPM.fit).
+
+# Step 2
+## Show full covariance matrix of the random intercepts. Check which indices you need to get the covariance matrix of the random intercepts. 
+vcov(RICLPM.fit) # The 22nd and the 23rd indices are about the random intercepts
+indices <- c(22, 23) 
+q <- length(indices) # Number of random intercepts
+S <- vcov(RICLPM.fit)[indices, indices] # Extract full covariance matrix of the random intercepts
+
+# Step 3
+Chi2_clpm <- summary(CLPM.fit, fit.measures = TRUE)[1]$FIT[c("chisq")] # Extract chi-square value of CLPM
+Chi2_riclpm <- summary(RICLPM.fit, fit.measures = TRUE)[1]$FIT[c("chisq")] # Extract chi-square value of RI-CLPM
+
+df_clpm <- summary(CLPM.fit, fit.measures = TRUE)[1]$FIT[c("df")] # Extract df of CLPM
+df_riclpm <- summary(RICLPM.fit, fit.measures = TRUE)[1]$FIT[c("df")] # Extract df of RI-CLPM
+
+# Step 4
+## Run function to do chi-bar-square test (and also obtain Chi-bar-square weigths)
+ChiBar2DiffTest <- ChiBarSq.DiffTest(q, S, Chi2_clpm, Chi2_riclpm, df_clpm, df_riclpm)
+ChiBar2DiffTest
+ChiBar2DiffTest$p_value
+
+```
+
+---
+
 ## References
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

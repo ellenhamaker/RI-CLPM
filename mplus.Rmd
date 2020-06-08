@@ -1,5 +1,5 @@
 ---
-title: "RI-CLPM & Extensions using Mplus"
+title: "Using Mplus"
 output: 
   html_document:
     toc:  true
@@ -10,14 +10,12 @@ bibliography: references.bib
 ---
 
 ## Setup
-For Mplus [@Mplus8] to work properly, please make sure that you save the input file with the model specification (*example.inp*) in the same folder as the data (*example.dat*). You can download the simulated example datasets [here](https://github.com/jeroendmulder/RICLPM/tree/master/data).
-
-Please note that program includes defaults, like that:
+For Mplus [@Mplus8] to work properly, make sure that you save the input file with the model specification (*example.inp*) in the same folder as the data (*example.dat*). You can download the simulated example datasets [here](https://github.com/ellenhamaker/RI-CLPM/tree/master/data). Mplus includes defaults, like that:
 
 * observed and latent exogenous variables are correlated, and
 * residuals of observed and latent outcome variables (which do not predict anything) in a path model are correlated.
 
-These defaults are included in Mplus to make the specification of many standard SEM models easier, but they are not always useful in the current modeling context. Therefore we will use the command `ANALYSIS: MODEL = NOCOV;` to overrule these defaults for the covariances and set all of them to zero.
+These defaults are included to make the specification of many standard SEM models easier, but they are not always useful in the current modeling context. Therefore, we use the command `ANALYSIS: MODEL = NOCOV;` to overrule these defaults for the covariances and set all of them to zero.
 
 ---
 
@@ -41,7 +39,7 @@ The syntax for specifying the basic RI-CLPM is given below.
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
         
@@ -104,7 +102,7 @@ Imposing constraints to the model can be achieved by giving labels to parameters
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:	    ! Create two individual factors (random intercepts)
+    MODEL:	    ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
         
@@ -160,10 +158,10 @@ Imposing constraints to the model can be achieved by giving labels to parameters
 ## Ext. 1: time-invariant variables {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of the RI-CLPM with
 
-* a time-invariant predictor $z_{1}$ of the observed variables,
+* a time-invariant predictor $z_{1}$ of the observed variables (constrained),
 * a time-invariant predictor $z_{1}$ of the random intercepts,
-* a time-invariant outcome $z_{2}$ of the observed variables, or
-* a time-invariant outcome $z_{2}$ of the random intercepts.
+* random intercepts predicting a time-invariant outcome $z_{2}$, or
+* within components predicting a time-invariant outcome $z_{2}$.
 
 ### $z_{1}$ predicting observed
 Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor $z_{1}$ for the observed variables. The effect of $z_{1}$ on the observed variables is constrained to be the same across waves.
@@ -178,7 +176,7 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -228,7 +226,7 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
 ---
 
 ### $z_{1}$ predicting RI's
-Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor z1 for the random intercepts.
+Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant predictor $z_{1}$ for the random intercepts.
 
     TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
                 the random intercepts. 
@@ -240,7 +238,7 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
@@ -288,12 +286,12 @@ Below you can find the syntax for a RI-CLPM with 5 waves and a time-invariant pr
 
 ---
 
-### observed predicting $z_{2}$
-Below you can find the syntax for a RI-CLPM with 5 waves and the observed variables predicting the time-invariant outcome $z_{2}$. The effect of the observed variables on the outcome $z_{2}$ is constrained to be the same across waves.
+### RI's predicting $z_{2}$
+Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome $z_{2}$. 
 
-    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
-                the observed variables (constrained) and a time-invariant 
-                outcome for the observed variables.  
+    TITLE:	    RI-CLPM, 5 waves.
+    	          Time-invariant predictor z1 for observed variables (constrained).
+    	          Between components predicting time-invariant outcome z2.
        
     DATA:       FILE = RICLPM-Z.dat;
                     
@@ -301,21 +299,16 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the observed variab
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
     
                 ! Estimate the covariance between the random intercepts
                 RIx WITH RIy;
     
-                ! Regression of observed variables on z1 (constrained)
-                x1-x5 ON z1 (s1);
-                y1-y5 ON z1 (s2);
-    
-                ! Regres future outcome on observed variables. 
-                z2 ON x1-x5 (o1)
-                z2 ON y1-y5 (o2);
-    
+                ! Regres distal outcome on random intercepts
+                z2 ON RIx RIy;
+                
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
                 wx2 BY x2@1;
@@ -358,12 +351,12 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the observed variab
 
 ---
 
-### RIs predicting $z_{2}$
-Below you can find the syntax for a RI-CLPM with 5 waves and the random intercepts predicting the time-invariant outcome $z_{2}$.
+### Within predicting $z_{2}$
+Below you can find the syntax for a RI-CLPM with 5 waves and the within components predicting the time-invariant outcome $z_{2}$.
 
-    TITLE:	    RI-CLPM, 5 waves, including a time-invariant predictor for
-                the observed variables (constrained) and a time-invariant 
-                outcome for the random intercepts.  
+    TITLE:	    RI-CLPM, 5 waves
+    	          Time-invariant predictor z1 for observed variables (constrained).
+    	          Within components predicting time-invariant outcome z2.
        
     DATA:       FILE = RICLPM-Z.dat;
                     
@@ -378,13 +371,6 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the random intercep
                 ! Estimate the covariance between the random intercepts
                 RIx WITH RIy;
     
-                ! Regression of observed variables on z1 (constrained)
-                x1-x5 ON z1 (s1);
-                y1-y5 ON z1 (s2);
-    
-                ! Regres future outcome on random intercepts. 
-                z2 ON RIx RIy;
-                
                 ! Create within-person centered variables
                 wx1 BY x1@1; 
                 wx2 BY x2@1;
@@ -401,6 +387,9 @@ Below you can find the syntax for a RI-CLPM with 5 waves and the random intercep
                 ! Constrain the measurement error variances to zero
                 x1-y5@0;
     
+    	          ! Regres distal outcome on within components
+                z2 ON wx1-wx5 wy1-wy5;
+                
                 ! Regression of observed variables on z1 (constrained)
                 x1-x5 ON z1 (s1);
                 y1-y5 ON z1 (s2);
@@ -452,7 +441,7 @@ Below you can find the code for a multiple group RI-CLPM with 5 waves.
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
         
@@ -520,7 +509,7 @@ Below you can find the code for a multiple group RI-CLPM, 5 waves. The lagged-pa
         
     ANALYSIS:   MODEL = NOCOV; ! Sets all default covariances to zero
         
-    MODEL:      ! Create two individual factors (random intercepts)
+    MODEL:      ! Create between components (random intercepts)
                 RIx BY x1@1 x2@1 x3@1 x4@1 x5@1;
                 RIy BY y1@1 y2@1 y3@1 y4@1 y5@1;
         
@@ -584,7 +573,7 @@ Below you can find the code for a multiple group RI-CLPM, 5 waves. The lagged-pa
 ## Ext. 3: multiple indicator {.tabset .tabset-fade}
 Use the tabs below to navigate to the model specification of a multiple indicator RI-CLPM, 5 waves and 3 indicators for each variable at each wave. The five steps correspond to:
 
-* the initial model (Step 1),
+* the configural model (Step 1),
 * weak factorial invariance (Step 2),
 * strong factorial invariance (Step 3),
 * strong factorial invariance with factor loadings equal to the within-person factor loadings (Extra), and
@@ -1055,20 +1044,3 @@ We have to overrule the default of Mplus to include a term for measurement error
 ---
 
 ## References
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
