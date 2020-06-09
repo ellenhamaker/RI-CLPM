@@ -1253,13 +1253,13 @@ summary(RICLPM5.ext3.fit, standardized = T)</code></pre>
 </div>
 </div>
 <div id="barchi2-test" class="section level2">
-<h2><span class="math inline">\(\bar{\chi^{2}}\)</span>-test</h2>
-<p>The use of the chi-square difference test is wide-spread in the SEM community to test constaints on parameters. However, when constraints are placed on the bound of the parameter space, we should use the chi-bar-square test (<span class="math inline">\(\bar{\chi^{2}}\)</span>-test) <span class="citation">(Stoel et al. 2006)</span>. For example, if we constrain the variances of all random intercepts (and their covariance) in the RI-CLPM to zero, we obtain a model that is nested under the RI-CLPM, and that is statistically equivalent to the traditional cross-lagged panel model (CLPM). Below you can find R code for performing the chi-bar-square test (code by <a href="https://www.uu.nl/staff/rmkuiper">Rebecca M. Kuiper</a>) for comparing these two models. It involves</p>
+<h2><span class="math inline">\(\bar{\chi}^{2}\)</span>-test</h2>
+<p>The use of the chi-square difference test is wide-spread in the SEM community to test constaints on parameters. However, when constraints are placed on the bound of the parameter space, we should use the chi-bar-square test (<span class="math inline">\(\bar{\chi}^{2}\)</span>-test) <span class="citation">(Stoel et al. 2006)</span>. For example, if we constrain the variances of all random intercepts (and their covariance) in the RI-CLPM to zero, we obtain a model that is nested under the RI-CLPM, and that is statistically equivalent to the traditional cross-lagged panel model (CLPM). Below you can find R code for performing the chi-bar-square test (code by <a href="https://www.uu.nl/staff/rmkuiper/Software">Rebecca M. Kuiper</a>) for comparing these two models. It involves</p>
 <ol style="list-style-type: decimal">
 <li>fitting both the RI-CLPM (<code>RICLPM.fit</code>) and CLPM (<code>CLPM.fit</code>);</li>
 <li>extracting the covariance matrix of the random intercepts;</li>
-<li>extracting the <span class="math inline">\(\chi^{2}\)</span> and degrees of freedom; and</li>
-<li>performing the <span class="math inline">\(\bar{\chi^{2}}\)</span>-test.</li>
+<li>extracting the <span class="math inline">\(\chi^{2}\)</span> and degrees of freedom of both models; and</li>
+<li>performing the <span class="math inline">\(\bar{\chi}^{2}\)</span>-test using the <code>ChiBarSq.DiffTest</code> package <span class="citation">(Kuiper 2020)</span>.</li>
 </ol>
 <pre class="r"><code># Install and load the required packages. 
 ## library(devtools)
@@ -1270,8 +1270,10 @@ library(ChiBarSq.DiffTest)
 ## Fit the RI-CLPM (RICLPM.fit) and the CLPM (CLPM.fit).
 
 # Step 2
-## Show full covariance matrix of the random intercepts. Check which indices you need to get the covariance matrix of the random intercepts. 
-vcov(RICLPM.fit) # The 22nd and the 23rd indices are about the random intercepts
+## Check which indices you need to get the covariance matrix of the random intercepts. 
+vcov(RICLPM.fit) # Full covariance matrix
+
+## The 22nd and the 23rd indices regard the random intercepts
 indices &lt;- c(22, 23) 
 q &lt;- length(indices) # Number of random intercepts
 S &lt;- vcov(RICLPM.fit)[indices, indices] # Extract full covariance matrix of the random intercepts
@@ -1293,6 +1295,9 @@ ChiBar2DiffTest$p_value</code></pre>
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <div id="refs" class="references">
+<div id="ref-Kuiper2020">
+<p>Kuiper, Rebecca M. 2020. <em>ChiBarSq.DiffTest: Chi-bar-square difference test of the RI-CLPM versus the CLPM and more general.</em></p>
+</div>
 <div id="ref-lavaan">
 <p>Rosseel, Yves. 2012. “lavaan: An R Package for Structural Equation Modeling.” <em>Journal of Statistical Software</em> 48 (2): 1–36. <a href="http://www.jstatsoft.org/v48/i02/" class="uri">http://www.jstatsoft.org/v48/i02/</a>.</p>
 </div>
