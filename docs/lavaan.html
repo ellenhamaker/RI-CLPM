@@ -463,7 +463,7 @@ datMI &lt;- read.table(&quot;/Users/jeroenmulder/Git/RICLPM/data/RICLPM-MI.dat&q
   wx4 ~~ wy4
   wx5 ~~ wy5
   
-  # Estimate the variance and covariance of the individual factors. 
+  # Estimate the variance and covariance of the random intercepts. 
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
@@ -516,7 +516,7 @@ summary(CLPM.fit, standardized = T)</code></pre>
 </div>
 <div id="constraints-over-time" class="section level3">
 <h3>Constraints over time</h3>
-<p>Imposing constraints to the model can be achieved through <strong>pre-multiplication</strong>. It means that we have to prepend the number that we want to fix the parameter to, and an asterisk, to the parameter in the model specification. For example, <code>F =~ 0*x1</code> fixes the factor loading of item <code>x1</code> to factor <code>F</code> to 0. Using pre-multiplication we can also constrain parameters to be the same by giving them the same label. Below we specify a RI-CLPM with the following constraints:</p>
+<p>Imposing constraints to the model can be achieved through <strong>pre-multiplication</strong>. It means that we have to prepend the number that we want to fix the parameter to, and an asterisk, to the parameter in the model specification. For example, <code>F =~ 0*x1</code> fixes the factor loading of item <code>x1</code> to factor <code>F</code> to 0. Using pre-multiplication we can also constrain parameters to be the same by giving them the same label. Below we specify an RI-CLPM with the following constraints:</p>
 <ol style="list-style-type: decimal">
 <li>fixed auto-regressive and cross-lagged relations over time, <code>wx2 ~ a*wx1 + b*wy1; ...</code>,</li>
 <li>time-invariant (residual) (co-)variances in the within-person part <code>wx2 ~~ cov*wy2; ...</code>, <code>wx2 ~~ vx*wx2; ...</code>, and <code>wy2 ~~ vy*wy2; ...</code>, and</li>
@@ -559,7 +559,7 @@ summary(CLPM.fit, standardized = T)</code></pre>
   # Estimate the covariance between the within-person centered variables at the first wave. 
   wx1 ~~ wy1 # Covariance
   
-  # Estimate the variance and covariance of the individual factors. 
+  # Estimate the variance and covariance of the random intercepts. 
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
@@ -596,7 +596,7 @@ summary(RICLPM5.fit, standardized = T)</code></pre>
 </ul>
 <div id="z_1-predicting-observed" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> predicting observed</h3>
-<p>Below you can find the code for a RI-CLPM with 5 waves and a time-invariant predictor <span class="math inline">\(z_{1}\)</span> for the observed variables. The effect of <span class="math inline">\(z_{1}\)</span> on the observed variables is constrained to be the same across waves.</p>
+<p>Below you can find the code for an RI-CLPM with 5 waves and a time-invariant predictor <span class="math inline">\(z_{1}\)</span> for the observed variables. The effect of <span class="math inline">\(z_{1}\)</span> on the observed variables is constrained to be the same across waves.</p>
 <pre class="r"><code>RICLPM.ext1 &lt;- &#39;
   # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
@@ -633,7 +633,7 @@ summary(RICLPM5.fit, standardized = T)</code></pre>
   wx4 ~~ wy4
   wx5 ~~ wy5
   
-  # Estimate the variance and covariance of the individual factors. 
+  # Estimate the variance and covariance of the random intercepts. 
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
@@ -656,11 +656,19 @@ summary(RICLPM.ext1.fit, standardized = T)</code></pre>
 </div>
 <div id="z_1-predicting-ris" class="section level3">
 <h3><span class="math inline">\(z_{1}\)</span> predicting RIs</h3>
-<p>Below you can find the code for a RI-CLPM with 5 waves and a time-invariant predictor <span class="math inline">\(z_{1}\)</span> for the random intercepts.</p>
+<p>Below you can find the code for an RI-CLPM with 5 waves and a time-invariant predictor <span class="math inline">\(z_{1}\)</span> for the random intercepts.</p>
 <pre class="r"><code>RICLPM1.ext1 &lt;- &#39;
   # Create between components (random intercepts)
   RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
   RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
+  
+  # Estimate the variance and covariance of the random intercepts. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+  
+  # Regression of random intercepts on z1. 
+  RIx + RIy ~ z1 # Constrained over time. 
   
   # Create within-person centered variables
   wx1 =~ 1*x1
@@ -673,10 +681,6 @@ summary(RICLPM.ext1.fit, standardized = T)</code></pre>
   wy3 =~ 1*y3
   wy4 =~ 1*y4
   wy5 =~ 1*y5
-  
-  # Regression of random intercepts on z1. 
-  RIx ~ z1 
-  RIy ~ z1 
   
   # Estimate the lagged effects between the within-person centered variables.
   wx2 + wy2 ~ wx1 + wy1
@@ -692,11 +696,6 @@ summary(RICLPM.ext1.fit, standardized = T)</code></pre>
   wx3 ~~ wy3
   wx4 ~~ wy4
   wx5 ~~ wy5
-  
-  # Estimate the variance and covariance of the individual factors. 
-  RIx ~~ RIx
-  RIy ~~ RIy
-  RIx ~~ RIy
   
   # Estimate the (residual) variance of the within-person centered variables.
   wx1 ~~ wx1 # Variances
@@ -716,11 +715,129 @@ summary(RICLPM1.ext1.fit, standardized = T)</code></pre>
 </div>
 <div id="ris-predicting-z_2" class="section level3">
 <h3>RI’s predicting <span class="math inline">\(z_{2}\)</span></h3>
-<p><em>lavaan</em> code will arrive soon for this model.</p>
+<p>Below you can find code for an RI-CLPM with the between components (the random intercepts) predicting a time-invariant outcome. For sake of completeness, the time-invariant <span class="math inline">\(z_{1}\)</span> is also included as a predictor the for observed variables (constrained).</p>
+<pre class="r"><code>RICLPM3.ext1 &lt;- &#39;
+  # Create between components (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
+  
+  # Estimate the variance and covariance of the random intercepts. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+  
+  # Regression of time-invariant outcome z2 on random intercepts.
+  z2 ~ RIx + RIy
+  z2 ~~ z2 # Residual variance z2
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+  wx5 =~ 1*x5
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+  wy5 =~ 1*y5
+  
+  # Regression of observed variables on z1 (constrained). 
+  x1 + x2 + x3 + x4 + x5 ~ s1*z1 # Constrained over time. 
+  y1 + y2 + y3 + y4 + y5 ~ s2*z1 # Constrained over time. 
+  
+  # Estimate the lagged effects between the within-person centered variables.
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+  wx5 + wy5 ~ wx4 + wy4
+  
+  # Estimate the covariance between the within-person centered variables at the first wave. 
+  wx1 ~~ wy1 # Covariance
+  
+  # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4
+  wx5 ~~ wy5
+  
+  # Estimate the (residual) variance of the within-person centered variables.
+  wx1 ~~ wx1 # Variances
+  wy1 ~~ wy1 
+  wx2 ~~ wx2 # Residual variances
+  wy2 ~~ wy2 
+  wx3 ~~ wx3 
+  wy3 ~~ wy3 
+  wx4 ~~ wx4 
+  wy4 ~~ wy4 
+  wx5 ~~ wx5
+  wy5 ~~ wy5
+&#39;
+RICLPM3.ext1.fit &lt;- lavaan(RICLPM3.ext1, data = datZ, missing = &#39;ML&#39;, meanstructure = T, int.ov.free = T) 
+summary(RICLPM3.ext1.fit, standardized = T)</code></pre>
 </div>
 <div id="within-predicting-z_2" class="section level3">
 <h3>Within predicting <span class="math inline">\(z_{2}\)</span></h3>
-<p><em>lavaan</em> code will arrive soon for this model.</p>
+<p>Below you can find code for an RI-CLPM with the within components predicting a time-invariant outcome. For sake of completeness, the time-invariant <span class="math inline">\(z_{1}\)</span> is also included as a predictor the for observed variables (constrained).</p>
+<pre class="r"><code>RICLPM4.ext1 &lt;- &#39;
+  # Create between components (random intercepts)
+  RIx =~ 1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5
+  RIy =~ 1*y1 + 1*y2 + 1*y3 + 1*y4 + 1*y5
+  
+  # Estimate the variance and covariance of the random intercepts. 
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+  
+  # Regression of time-invariant outcome z2 on within components.
+  z2 ~ wx1 + wx2 + wx3 + wx4 + wx5 + wy1 + wy2 + wy3 + wy4 + wy5
+  z2 ~~ z2 # Residual variance z2
+  
+  # Create within-person centered variables
+  wx1 =~ 1*x1
+  wx2 =~ 1*x2
+  wx3 =~ 1*x3 
+  wx4 =~ 1*x4
+  wx5 =~ 1*x5
+  wy1 =~ 1*y1
+  wy2 =~ 1*y2
+  wy3 =~ 1*y3
+  wy4 =~ 1*y4
+  wy5 =~ 1*y5
+  
+  # Regression of observed variables on z1 (constrained). 
+  x1 + x2 + x3 + x4 + x5 ~ s1*z1 # Constrained over time. 
+  y1 + y2 + y3 + y4 + y5 ~ s2*z1 # Constrained over time. 
+  
+  # Estimate the lagged effects between the within-person centered variables.
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  wx4 + wy4 ~ wx3 + wy3
+  wx5 + wy5 ~ wx4 + wy4
+  
+  # Estimate the covariance between the within-person centered variables at the first wave. 
+  wx1 ~~ wy1 # Covariance
+  
+  # Estimate the covariances between the residuals of the within-person centered variables (the innovations).
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  wx4 ~~ wy4
+  wx5 ~~ wy5
+  
+  # Estimate the (residual) variance of the within-person centered variables.
+  wx1 ~~ wx1 # Variances
+  wy1 ~~ wy1 
+  wx2 ~~ wx2 # Residual variances
+  wy2 ~~ wy2 
+  wx3 ~~ wx3 
+  wy3 ~~ wy3 
+  wx4 ~~ wx4 
+  wy4 ~~ wy4 
+  wx5 ~~ wx5
+  wy5 ~~ wy5
+&#39;
+RICLPM4.ext1.fit &lt;- lavaan(RICLPM4.ext1, data = datZ, missing = &#39;ML&#39;, meanstructure = T, int.ov.free = T) 
+summary(RICLPM4.ext1.fit, standardized = T)</code></pre>
 </div>
 </div>
 <div id="ext.-2-multiple-group" class="section level2 tabset tabset-fade">
@@ -759,7 +876,7 @@ summary(RICLPM1.ext1.fit, standardized = T)</code></pre>
   wx4 ~~ wy4
   wx5 ~~ wy5
   
-  # Estimate the variance and covariance of the individual factors. 
+  # Estimate the variance and covariance of the random intercepts. 
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
@@ -819,7 +936,7 @@ summary(RICLPM.ext2.fit)</code></pre>
   wx4 ~~ wy4
   wx5 ~~ wy5
   
-  # Estimate the variance and covariance of the individual factors. 
+  # Estimate the variance and covariance of the random intercepts. 
   RIx ~~ RIx
   RIy ~~ RIy
   RIx ~~ RIy
@@ -1299,10 +1416,10 @@ ChiBar2DiffTest$p_value</code></pre>
 <p>Kuiper, Rebecca M. 2020. <em>ChiBarSq.DiffTest: Chi-bar-square difference test of the RI-CLPM versus the CLPM and more general.</em></p>
 </div>
 <div id="ref-lavaan">
-<p>Rosseel, Yves. 2012. “lavaan: An R Package for Structural Equation Modeling.” <em>Journal of Statistical Software</em> 48 (2): 1–36. <a href="http://www.jstatsoft.org/v48/i02/" class="uri">http://www.jstatsoft.org/v48/i02/</a>.</p>
+<p>Rosseel, Yves. 2012. “lavaan: An R Package for Structural Equation Modeling.” <em>Journal of Statistical Software</em> 48 (2): 1–36. <a href="http://www.jstatsoft.org/v48/i02/">http://www.jstatsoft.org/v48/i02/</a>.</p>
 </div>
 <div id="ref-Stoel2006">
-<p>Stoel, Reinoud D., Francisca Galindo Garre, Conor Dolan, and Godfried van den Wittenboer. 2006. “On the likelihood ratio test in structural equation modeling when parameters are subject to boundary constraints.” <em>Psychological Methods</em> 11 (4): 439–55. doi:<a href="https://doi.org/10.1037/1082-989X.11.4.439">10.1037/1082-989X.11.4.439</a>.</p>
+<p>Stoel, Reinoud D., Francisca Galindo Garre, Conor Dolan, and Godfried van den Wittenboer. 2006. “On the likelihood ratio test in structural equation modeling when parameters are subject to boundary constraints.” <em>Psychological Methods</em> 11 (4): 439–55. <a href="https://doi.org/10.1037/1082-989X.11.4.439">https://doi.org/10.1037/1082-989X.11.4.439</a>.</p>
 </div>
 </div>
 </div>
